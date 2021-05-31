@@ -1,0 +1,20 @@
+*
+{
+    background-color:blanchedalmond;
+}
+
+h1, h2
+{
+    font-family: Nunito;
+    text-align: center;
+}
+
+.addBook
+{
+    text-align: center;
+}
+
+.searchBook
+{
+    text-align: left;
+}

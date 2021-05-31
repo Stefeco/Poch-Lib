@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="style.css">
+    <title>recherche de livre</title>
+</head>
+
+<body id="searchPage">
+    <h1>Poch'Lib</h1>
+    <hr>
+    <h2>Nouveau Livre</h2>
+    <form>
+        <p>
+            <label for="bookTitle">Titre du livre</label>
+            <input type="text" name="bookTitle" id="bookTitle" size="20" placeholder="titre" />
+        </p>
+        <p>
+            <label for="author">Auteur</label>
+            <input type="text" name="author" id="author" size="20" placeholder="auteur" />
+        </p>
+        <div class="searchBook">
+        <p>
+            <input type="button" name="bookSearch" id="bookSearch" value="recherche" />
+        </p>
+        <p id="aqueSearch">enter text here</p>
+        <p>
+            <a href="index.html"><input type="button" name="cancelSearch" id="cancelSearch" value="annuler" /></a>
+        </p>
+        </div>
+        <hr>
+        <h2>Ma Poch'Liste</h2>
+
+    </form>
+
+    <div id="output">
+        <ul id="bookList" class="Blist">
+        <!--the data will be loaded here!-->
+        </ul>
+    </div>
+    <script src="script.js" async></script>
+</body>
+
+
+</html>
