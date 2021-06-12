@@ -10,20 +10,25 @@
     <h1>Poch'Lib</h1>
     <hr>
     <h2>Nouveau Livre</h2>
-    <form>
+    <form class="form" id="form">
         <p>
             <label for="bookTitle">Titre du livre</label>
-            <input type="text" name="bookTitle" id="bookTitle" size="20" placeholder="titre" />
+            <input type="text" name="bookTitle" id="bookTitle" size="20" placeholder="titre"/>
+            <i class="check_ok"></i>
+            <i class="check_nok"></i>
+            <small>error message</small>
         </p>
         <p>
             <label for="author">Auteur</label>
-            <input type="text" name="author" id="author" size="20" placeholder="auteur" />
+            <input type="text" name="author" id="author" size="20" placeholder="auteur"/>
+            <i class="check_ok"></i>
+            <i class="check_nok"></i>
+            <small>error message</small>
         </p>
         <div class="searchBook">
         <p>
             <input type="button" name="bookSearch" id="bookSearch" value="recherche" />
         </p>
-        <p id="aqueSearch">enter text here</p>
         <p>
             <a href="index.html"><input type="button" name="cancelSearch" id="cancelSearch" value="annuler" /></a>
         </p>
@@ -33,10 +38,14 @@
 
     </form>
 
-    <div id="output">
-        <ul id="bookList" class="Blist">
-        <!--the data will be loaded here!-->
-        </ul>
+    <div id="output_div" class="book-container">
+        <!--<div id="book-item" class="book_box">
+            <h3>Titre : <span id="book_title_span"></span></h3>
+            <p>id : <span id="book_id_span"></span></p>
+            <p>auteur : <span id="book_author_span"></span></p>
+            <p>Description : <span id="book_desc_span"></span></p>
+            <img src="./images/unavailable.png" id = "img-unav" alt="image non disponible">
+        </div>-->
     </div>
     <script src="script.js" async></script>
 </body>
