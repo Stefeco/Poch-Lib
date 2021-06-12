@@ -18,3 +18,15 @@ h1, h2
 {
     text-align: left;
 }
+
+#img-unav
+{
+    height: 20em;
+    width: 20em;
+}
+
+#book-item
+{
+    align-items: center;
+    padding: 5em;
+}
