@@ -18,13 +18,11 @@ let bookHTML = '';
 const app = {
     init: () => {
         document.addEventListener("DOMContentLoaded", app.load);
-        //app.getData();
         console.log("HTML Loaded");
     },
     load: () => {
         //the page has finished loading
         app.showLoading();
-        //app.getData(); TODO a modifier si on charge le bouton au load de la page ou si on utilise uniquement le bouton searchBook?
     },
     showLoading: () => {
         let div_loading = document.querySelector("#output_div");
@@ -52,36 +50,9 @@ const app = {
         }
     },
 
-    validateEntries: () => {
-
-        let messages = []
-        console.log("titre avant le if : " + titleReq);
-        console.log("auteur avant le if : " + authorReq);
-        
-    
-        if (titleReq === undefined || titleReq === ""){
-            console.log("titre dans le if : " + titleReq);
-        messages.push("a title is required");
-        }
-        if (authorReq === undefined || authorReq === ""){
-            console.log("auteur dans le if : " + authorReq);
-        messages.push("you must enter a name for the author");
-        }
-        if(messages.length > 0){
-        console.log("messages = " + messages);
-        bookHTML = '';
-        app.err(messages);
-
-        }
-        
-    },
-
     getBooks: () => {
-    titleReq = document.getElementById("bookTitle").value;
-    authorReq = document.getElementById("author").value;
-
-        app.validateEntries();
-        
+    //titleReq = document.getElementById("bookTitle").value;
+    //authorReq = document.getElementById("author").value;
 
         let url = "https://www.googleapis.com/books/v1/volumes?q=" + titleReq +"+inauthor:" + authorReq;
         let req = new Request(url, {
@@ -119,23 +90,18 @@ const app = {
             livre.id = books[book].id;
 
             livre.author = books[book].volumeInfo.authors;
-            //livre.author.innerHTML = livre.author;
             
             livre.description = books[book].volumeInfo.description;
-            //livre.description.innerHTML = livre.description;
             
             let sourceImg;
             try{
                 livre.thumbnail = books[book].volumeInfo.imageLinks.thumbnail;
-                //console.log("livre.thumbnail pour livre " + book + " : " + livre.thumbnail);
             } catch (e) {
-                //console.log("le thumbnail du livre " + book + " n'est pas présent" + e);
             } finally {
-                //let book_thumbnail_img = document.querySelector("#img-unav");
                 if(livre.thumbnail != undefined){
-                    sourceImg = livre.thumbnail;        //book_thumbnail_img.setAttribute("src", livre.thumbnail);
+                    sourceImg = livre.thumbnail;       
                     }else{
-                        sourceImg = "./images/unavailable.png";        //book_thumbnail_img.setAttribute("src", "./images/unavailable.png");
+                        sourceImg = "./images/unavailable.png";        
                     }
     
             }
@@ -143,7 +109,7 @@ const app = {
             bookHTML += "<h3 id=\"title\">Titre : <span id=\"book_title_span\">"+livre.title+"</span></h3>"
                                 + "<p>id : <span id=\"book_id_span\">"+livre.id+"</span></p>"
                                 + "<p>auteur : <span id=\"book_author_span\">"+livre.author+"</span></p>"
-                                + "<p>Description : <span id=\"book_desc_span\">"+livre.description+"</span></p>"
+                                + "<p>Description : <span class=\"book_desc_span\">"+livre.description+"</span></p>"
                                 + "<img src="+sourceImg+" id = \"img-unav\" alt=\"image non disponible\"></img>";
 
         }
@@ -170,39 +136,57 @@ const app = {
 
 }
 
+function checkInputs(){
+    //get the values from the inputs
+    let bookTitle = document.getElementById("bookTitle");
+    let author = document.getElementById("author");
+    titleReq = bookTitle.value.trim();
+    authorReq = author.value.trim();
+
+    let errorMsg = document.querySelector("#bookTitle_error").innerHTML;
+    console.log(errorMsg);
+
+    if (titleReq === undefined || titleReq === ""){
+        //show error
+        //add error class
+        setErrorFor(bookTitle, "you must enter a book title"); //as argument we search the document.getElementById for bookTitle
+    } else {
+        setSuccessFor(bookTitle);
+        //add success class
+    }
+
+    if (authorReq === undefined || authorReq === ""){
+        //show error
+        //add error class
+        setErrorFor(author, "you must enter an author name");
+    } else {
+        //add success class
+        setSuccessFor(author);
+    }
+
+    if ((bookTitle.parentElement.className == "input-control success") && (author.parentElement.className =="input-control success")){
+        app.getBooks();
+    }
+
+
+}
+
+function setErrorFor(input, message){
+    const inputControl = input.parentElement; // .input-control - get the input-control class name
+    const small = inputControl.querySelector("small");
+    //we add the error message inside the small tag
+    small.innerHTML=message;
+    //add error class
+    inputControl.className="input-control error";
+
+}
+
+function setSuccessFor(input){
+    const inputControl = input.parentElement;
+    inputControl.className = "input-control success";
+}
+
+
 app.init();
 
-document.querySelector("#bookSearch").addEventListener("click", app.getBooks, true);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/** 
-function addMessage(){
-    document.getElementById("searchPage");
-    document.querySelector("#aqueSearch").innerHTML = "I search for a book!";
-}
-
-function addTestMessage(){
-    document.getElementById("indexPage");
-    document.getElementById("test").innerHTML = "added test message";
-}
-
-
-
-//addMessage();
-*/
+document.querySelector("#bookSearch").addEventListener("click", checkInputs, false);

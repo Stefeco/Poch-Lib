@@ -4,6 +4,10 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="style.css">
     <title>recherche de livre</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Karla&display=swap');
+    </style>
+    <script src="https://kit.fontawesome.com/95b63d5e53.js" crossorigin="anonymous"></script>
 </head>
 
 <body id="searchPage">
@@ -12,41 +16,37 @@
     <h2>Nouveau Livre</h2>
     <form class="form" id="form">
         <p>
-            <label for="bookTitle">Titre du livre</label>
-            <input type="text" name="bookTitle" id="bookTitle" size="20" placeholder="titre"/>
-            <i class="check_ok"></i>
-            <i class="check_nok"></i>
-            <small>error message</small>
-        </p>
-        <p>
-            <label for="author">Auteur</label>
-            <input type="text" name="author" id="author" size="20" placeholder="auteur"/>
-            <i class="check_ok"></i>
-            <i class="check_nok"></i>
-            <small>error message</small>
-        </p>
-        <div class="searchBook">
+            <div class="input-control">
+                <label for="bookTitle">Titre du livre</label>
+                <input type="text" name="bookTitle" id="bookTitle" size="20" placeholder="titre"/>
+                <i class="fas fa-solid fa-thumbs-up"></i>
+                <i class="fas fa-solid fa-thumbs-down"></i>
+                <small id="bookTitle_error">error message</small>
+            </p>
+            <p>
+            </div>
+            <div class="input-control">
+                <label for="author">Auteur</label>
+                <input type="text" name="author" id="author" size="20" placeholder="auteur"/>
+                <i class="fas fa-solid fa-thumbs-up"></i>
+                <i class="fas fa-solid fa-thumbs-down"></i>
+                <small id="authorName_error">error message</small>
+            </p>
+            </div>
+            <p></p>
         <p>
             <input type="button" name="bookSearch" id="bookSearch" value="recherche" />
         </p>
         <p>
             <a href="index.html"><input type="button" name="cancelSearch" id="cancelSearch" value="annuler" /></a>
         </p>
-        </div>
         <hr>
-        <h2>Ma Poch'Liste</h2>
 
     </form>
+    <h2>Ma Poch'Liste</h2>
 
     <div id="output_div" class="book-container">
-        <!--<div id="book-item" class="book_box">
-            changes test
-            <h3>Titre : <span id="book_title_span"></span></h3>
-            <p>id : <span id="book_id_span"></span></p>
-            <p>auteur : <span id="book_author_span"></span></p>
-            <p>Description : <span id="book_desc_span"></span></p>
-            <img src="./images/unavailable.png" id = "img-unav" alt="image non disponible">
-        </div>-->
+        <!--here is inserted book_items through js-->
     </div>
     <script src="script.js" async></script>
 </body>
