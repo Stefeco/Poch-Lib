@@ -14,7 +14,6 @@ let authorReq;
 let bookHTML = '';
 
 
-
 const app = {
     init: () => {
         document.addEventListener("DOMContentLoaded", app.load);
@@ -51,8 +50,8 @@ const app = {
     },
 
     getBooks: () => {
-    //titleReq = document.getElementById("bookTitle").value;
-    //authorReq = document.getElementById("author").value;
+
+        //titleReq et authorReq sont passés via la fonction checkInputs
 
         let url = "https://www.googleapis.com/books/v1/volumes?q=" + titleReq +"+inauthor:" + authorReq;
         let req = new Request(url, {
@@ -77,13 +76,11 @@ const app = {
 
     showBooks: (books) => {
         let bookList = document.getElementById("output_div");
-        let bookDiv = document.createElement("DIV");
+        //let bookDiv = document.createElement("DIV");
+        //bookDiv.setAttribute("id", "bookDiv");
 
         for (let book in books){
             let livre = new Book();
-
-            bookDiv.setAttribute("class", "book_box");
-            bookDiv.setAttribute("id", "book-item"+[book]);
 
             livre.title = books[book].volumeInfo.title;
 
@@ -106,16 +103,18 @@ const app = {
     
             }
             
-            bookHTML += "<h3 id=\"title\">Titre : <span id=\"book_title_span\">"+livre.title+"</span></h3>"
+            bookHTML +=         "<div class=\"book_box\" id=\"book-item"+[book]+"\">"
+                                + "<a href=\"#\" onclick=\"app.addToStorage()\"class=\"fas fa-solid fa-bookmark\" id=\"bookmark"+[book]+"\"></a>"
+                                + "<h3 id=\"title\">Titre : <span id=\"book_title_span\">"+livre.title+"</span></h3>"
                                 + "<p>id : <span id=\"book_id_span\">"+livre.id+"</span></p>"
                                 + "<p>auteur : <span id=\"book_author_span\">"+livre.author+"</span></p>"
                                 + "<p>Description : <span class=\"book_desc_span\">"+livre.description+"</span></p>"
-                                + "<img src="+sourceImg+" id = \"img-unav\" alt=\"image non disponible\"></img>";
+                                + "<img src="+sourceImg+" id = \"img-unav\" alt=\"image non disponible\"></img>"
+                                + "</div>";
 
         }
 
-        bookDiv.innerHTML = bookHTML;
-        bookList.appendChild(bookDiv);
+        bookList.innerHTML = bookHTML;
      
     },
 
@@ -132,10 +131,71 @@ const app = {
             let div = document.querySelector(".error_msg");
             div.parentElement.removeChild(div);
         }, 3000);
+    },
+
+    addToStorage: () => {
+        console.log("addToStorage ok");
+
+        // sélection de l'interface graphique de la librairie
+        const openStorageButton = document.querySelectorAll('[data-storage-target]');
+        const closeStorageButton = document.querySelectorAll('[data-close-button]');
+        const overlay = document.getElementById('storage__overlay');
+
+        // on charge les variables à utiliser pour le sessionStorage
+        const bookIdStorage = JSON.stringify(document.getElementById('book_id_span').firstChild.data);
+        const bookObjectStorage = document.querySelector('#book_id_span').parentNode.parentNode;
+        console.log(bookIdStorage);
+        console.log(bookObjectStorage);
+        const bookObjTest = JSON.stringify(bookObjectStorage.children);
+        console.log("bookObjTest = " + bookObjTest);
+        //const bookObjSerialized = JSON.stringify(bookObjectStorage);
+        //console.log(bookObjSerialized);
+        sessionStorage.setItem(bookIdStorage, bookObjTest);
+        console.log("after session storage : "+ JSON.parse(sessionStorage.getItem(bookIdStorage)));
+
+
+        /*------------event listeners pour le session storage -------------------------------------*/
+        //eventListeners pour ouvrir ou fermer la librairie et changer l'overlay (semi-opaque).
+        overlay.addEventListener('click',() => {
+            const storages = document.querySelectorAll('.storage.active')
+            storages.forEach(storage => {
+                closeStorage(storage);
+            })
+        })
+
+        openStorageButton.forEach(button => {
+            button.addEventListener('click', () => {
+                const storage = document.querySelector('#storId')
+                console.log(storage);
+                openStorage(storage)
+            })
+        })
+
+        closeStorageButton.forEach(button => {
+            button.addEventListener('click', () => {
+                const storage = button.closest('.storage')
+                closeStorage(storage)
+            })
+        })
+
+
+    function openStorage (storage) {
+        if(storage == null) return
+        storage.classList.add('active')//className?
+        overlay.classList.add('active')
     }
 
-}
+    function closeStorage (storage){
+        if(storage == null) return
+        storage.classList.remove('active')
+        overlay.classList.remove('active')
+    }    
 
+
+    }//end of addtoStorage
+}//end of App
+
+/* ------- on vérifie les inputs avec des classes css différentes si erreur le champ passe en rouge et ms d'erreur si ok on passe en vert et continue ----------*/
 function checkInputs(){
     //get the values from the inputs
     let bookTitle = document.getElementById("bookTitle");
@@ -147,20 +207,14 @@ function checkInputs(){
     console.log(errorMsg);
 
     if (titleReq === undefined || titleReq === ""){
-        //show error
-        //add error class
-        setErrorFor(bookTitle, "you must enter a book title"); //as argument we search the document.getElementById for bookTitle
+        setErrorFor(bookTitle, "you must enter a book title");
     } else {
         setSuccessFor(bookTitle);
-        //add success class
     }
 
     if (authorReq === undefined || authorReq === ""){
-        //show error
-        //add error class
         setErrorFor(author, "you must enter an author name");
     } else {
-        //add success class
         setSuccessFor(author);
     }
 
@@ -187,6 +241,11 @@ function setSuccessFor(input){
 }
 
 
+
 app.init();
 
 document.querySelector("#bookSearch").addEventListener("click", checkInputs, false);
+
+
+
+
