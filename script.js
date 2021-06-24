@@ -102,7 +102,7 @@ const app = {
             }
             
             bookHTML +=         "<div class=\"book_box\" id=\"book-item"+[book]+"\">"
-                                + "<a href=\"#\" onclick=\"addToStorage()\"class=\"fas fa-solid fa-bookmark\" id=\"bookmark"+[book]+"\"></a>"
+                                + "<a href=\"#\" onclick=\"app.addToStorage("+book+")\"class=\"fas fa-solid fa-bookmark\" id=\"bookmark"+[book]+"\"></a>"
                                 + "<h3 id=\"title\">Titre : <span id=\"book_title_span\">"+livre.title+"</span></h3>"
                                 + "<p>id : <span id=\"book_id_span\">"+livre.id+"</span></p>"
                                 + "<p>auteur : <span id=\"book_author_span\">"+livre.author+"</span></p>"
@@ -110,12 +110,9 @@ const app = {
                                 + "<img src="+sourceImg+" id = \"img-unav\" alt=\"image non disponible\"></img>"
                                 + "</div>";
 
-
-
         }
 
         bookList.innerHTML = bookHTML;
-        console.log("bookList = " + (bookList.innerHTML));
      
     },
 
@@ -134,10 +131,11 @@ const app = {
         }, 3000);
     },
 
-    addToStorage: () => {
-        console.log("addToStorage ok");
-                        
-        // sélection de l'interface graphique de la librairie
+
+
+    addToStorage: (bk) => {
+        console.log("addToStorage ok : " + bk);
+
         const openStorageButton = document.querySelectorAll('[data-storage-target]');
         const closeStorageButton = document.querySelectorAll('[data-close-button]');
         const overlay = document.getElementById('storage__overlay');
@@ -151,7 +149,7 @@ const app = {
                         
                         
         const livreHTML =  "<div class=\"book_box\" id=\"book-item\">"
-                            + "<a href=\"#\" onclick=\"app.addToStorage()\"class=\"fas fa-solid fa-bookmark\" id=\"bookmark\"></a>"
+                            //+ "<a href=\"#\" onclick=\"app.addToStorage()\"class=\"fas fa-solid fa-bookmark\" id=\"bookmark\"></a>"
                             + "<h3 id=\"title\">Titre : <span data-title=\"title\" id=\"book_title_span\">"+bookTitleStorage+"</span></h3>"
                             + "<p>id : <span id=\"book_id_span\">"+bookIdStorage+"</span></p>"
                             + "<p>auteur : <span id=\"book_author_span\">"+bookAuthorStorage+"</span></p>"
@@ -173,6 +171,9 @@ const app = {
                         
         /*------------event listeners pour le session storage -------------------------------------*/
         //eventListeners pour ouvrir ou fermer la librairie et changer l'overlay (semi-opaque).
+        // sélection de l'interface graphique de la librairie
+
+
         overlay.addEventListener('click',() => {
         const storages = document.querySelectorAll('.storage.active')
         storages.forEach(storage => {
@@ -209,9 +210,10 @@ const app = {
            }    
                         
                         
-        }//end of addtoStorage    
+    }//end of addtoStorage    
 
-}//end of App
+} //end of app (temp)
+
 
 /* ------- on vérifie les inputs avec des classes css différentes si erreur le champ passe en rouge et ms d'erreur si ok on passe en vert et continue ----------*/
 function checkInputs(){
