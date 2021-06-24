@@ -76,8 +76,6 @@ const app = {
 
     showBooks: (books) => {
         let bookList = document.getElementById("output_div");
-        //let bookDiv = document.createElement("DIV");
-        //bookDiv.setAttribute("id", "bookDiv");
 
         for (let book in books){
             let livre = new Book();
@@ -104,17 +102,20 @@ const app = {
             }
             
             bookHTML +=         "<div class=\"book_box\" id=\"book-item"+[book]+"\">"
-                                + "<a href=\"#\" onclick=\"app.addToStorage()\"class=\"fas fa-solid fa-bookmark\" id=\"bookmark"+[book]+"\"></a>"
+                                + "<a href=\"#\" onclick=\"addToStorage()\"class=\"fas fa-solid fa-bookmark\" id=\"bookmark"+[book]+"\"></a>"
                                 + "<h3 id=\"title\">Titre : <span id=\"book_title_span\">"+livre.title+"</span></h3>"
                                 + "<p>id : <span id=\"book_id_span\">"+livre.id+"</span></p>"
                                 + "<p>auteur : <span id=\"book_author_span\">"+livre.author+"</span></p>"
-                                + "<p>Description : <span class=\"book_desc_span\">"+livre.description+"</span></p>"
+                                + "<p>Description : <span class=\"book_desc_span\" id=\"book_desc\">"+livre.description+"</span></p>"
                                 + "<img src="+sourceImg+" id = \"img-unav\" alt=\"image non disponible\"></img>"
                                 + "</div>";
+
+
 
         }
 
         bookList.innerHTML = bookHTML;
+        console.log("bookList = " + (bookList.innerHTML));
      
     },
 
@@ -135,64 +136,81 @@ const app = {
 
     addToStorage: () => {
         console.log("addToStorage ok");
-
+                        
         // sélection de l'interface graphique de la librairie
         const openStorageButton = document.querySelectorAll('[data-storage-target]');
         const closeStorageButton = document.querySelectorAll('[data-close-button]');
         const overlay = document.getElementById('storage__overlay');
-
+                        
         // on charge les variables à utiliser pour le sessionStorage
         const bookIdStorage = JSON.stringify(document.getElementById('book_id_span').firstChild.data);
-        const bookObjectStorage = document.querySelector('#book_id_span').parentNode.parentNode;
-        console.log(bookIdStorage);
-        console.log(bookObjectStorage);
-        const bookObjTest = JSON.stringify(bookObjectStorage.children);
-        console.log("bookObjTest = " + bookObjTest);
-        //const bookObjSerialized = JSON.stringify(bookObjectStorage);
-        //console.log(bookObjSerialized);
-        sessionStorage.setItem(bookIdStorage, bookObjTest);
-        console.log("after session storage : "+ JSON.parse(sessionStorage.getItem(bookIdStorage)));
-
-
+        const bookTitleStorage = JSON.stringify(document.getElementById('book_title_span').firstChild.data);
+        const bookAuthorStorage = JSON.stringify(document.getElementById('book_author_span').firstChild.data);
+        const bookDescriptionStorage = JSON.stringify(document.getElementById('book_desc').firstChild.data);
+        const bookImageStorage = JSON.stringify(document.querySelector('img').getAttribute('src'));
+                        
+                        
+        const livreHTML =  "<div class=\"book_box\" id=\"book-item\">"
+                            + "<a href=\"#\" onclick=\"app.addToStorage()\"class=\"fas fa-solid fa-bookmark\" id=\"bookmark\"></a>"
+                            + "<h3 id=\"title\">Titre : <span data-title=\"title\" id=\"book_title_span\">"+bookTitleStorage+"</span></h3>"
+                            + "<p>id : <span id=\"book_id_span\">"+bookIdStorage+"</span></p>"
+                            + "<p>auteur : <span id=\"book_author_span\">"+bookAuthorStorage+"</span></p>"
+                            + "<p>Description : <span class=\"book_desc_span\">"+bookDescriptionStorage+"</span></p>"
+                            + "<img src="+bookImageStorage+" id = \"img-unav\" alt=\"image non disponible\"></img>"
+                            + "</div>";
+                        
+                        
+        console.log("bookIdStorage = " +bookIdStorage);
+        console.log("bookTitleStorage = " + bookTitleStorage);
+        console.log("bookAuthorStorage = " + bookAuthorStorage);
+        console.log("bookDescriptionStorage = " + bookDescriptionStorage);
+        console.log("bookImageStorage = " + bookImageStorage);
+        sessionStorage.setItem(bookIdStorage, livreHTML);
+        console.log("after session storage : "+ sessionStorage.getItem(bookIdStorage));
+                        
+                        
+                        
+                        
         /*------------event listeners pour le session storage -------------------------------------*/
         //eventListeners pour ouvrir ou fermer la librairie et changer l'overlay (semi-opaque).
         overlay.addEventListener('click',() => {
-            const storages = document.querySelectorAll('.storage.active')
-            storages.forEach(storage => {
-                closeStorage(storage);
+        const storages = document.querySelectorAll('.storage.active')
+        storages.forEach(storage => {
+        closeStorage(storage);
             })
         })
-
+                        
         openStorageButton.forEach(button => {
-            button.addEventListener('click', () => {
-                const storage = document.querySelector('#storId')
-                console.log(storage);
-                openStorage(storage)
-            })
-        })
-
+        button.addEventListener('click', () => {
+        const storage = document.querySelector('#storId')
+        console.log(storage);
+        openStorage(storage)
+                    })
+                })
+                        
         closeStorageButton.forEach(button => {
-            button.addEventListener('click', () => {
-                const storage = button.closest('.storage')
-                closeStorage(storage)
-            })
+        button.addEventListener('click', () => {
+        const storage = button.closest('.storage')
+        closeStorage(storage)
+           })
         })
-
-
-    function openStorage (storage) {
+                        
+                        
+        function openStorage (storage) {
         if(storage == null) return
         storage.classList.add('active')//className?
         overlay.classList.add('active')
-    }
-
-    function closeStorage (storage){
+            }
+                        
+        function closeStorage (storage){
         if(storage == null) return
         storage.classList.remove('active')
         overlay.classList.remove('active')
-    }    
+           }    
+                        
+                        
+        }//end of addtoStorage    
 
-
-    }//end of addtoStorage
 }//end of App
 
 /* ------- on vérifie les inputs avec des classes css différentes si erreur le champ passe en rouge et ms d'erreur si ok on passe en vert et continue ----------*/
