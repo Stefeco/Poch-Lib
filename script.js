@@ -11,7 +11,8 @@ class Book{
 let books = [];
 let titleReq;
 let authorReq;
-let bookHTML = '';
+let bookList = '';
+
 
 
 const app = {
@@ -75,7 +76,7 @@ const app = {
     },
 
     showBooks: (books) => {
-        let bookList = document.getElementById("output_div");
+        bookList = document.getElementById("output_div");
 
         for (let book in books){
             let livre = new Book();
@@ -100,9 +101,10 @@ const app = {
                     }
     
             }
-            
-            bookHTML +=         "<div class=\"book_box\" id=\"book-item"+[book]+"\">"
-                                + "<a href=\"#\" onclick=\"app.addToStorage("+book+")\"class=\"fas fa-solid fa-bookmark\" id=\"bookmark"+[book]+"\"></a>"
+            //console.log(livre);pour vérifier que l'objet livre est bien créé
+
+            let bookHTML =         "<div class=\"book_box\" id=\"book-item"+book+"\">"
+                                + "<a href=\"#\" onclick=\"app.addToStorage("+book+")\"class=\"fas fa-solid fa-bookmark\" id=\"bookmark"+book+"\"></a>"
                                 + "<h3 id=\"title\">Titre : <span id=\"book_title_span\">"+livre.title+"</span></h3>"
                                 + "<p>id : <span id=\"book_id_span\">"+livre.id+"</span></p>"
                                 + "<p>auteur : <span id=\"book_author_span\">"+livre.author+"</span></p>"
@@ -110,9 +112,13 @@ const app = {
                                 + "<img src="+sourceImg+" id = \"img-unav\" alt=\"image non disponible\"></img>"
                                 + "</div>";
 
+            bookList.innerHTML += bookHTML;
+
         }
 
-        bookList.innerHTML = bookHTML;
+    console.log(bookList);
+
+
      
     },
 
@@ -141,15 +147,16 @@ const app = {
         const overlay = document.getElementById('storage__overlay');
                         
         // on charge les variables à utiliser pour le sessionStorage
-        const bookIdStorage = JSON.stringify(document.getElementById('book_id_span').firstChild.data);
-        const bookTitleStorage = JSON.stringify(document.getElementById('book_title_span').firstChild.data);
-        const bookAuthorStorage = JSON.stringify(document.getElementById('book_author_span').firstChild.data);
-        const bookDescriptionStorage = JSON.stringify(document.getElementById('book_desc').firstChild.data);
-        const bookImageStorage = JSON.stringify(document.querySelector('img').getAttribute('src'));
+        const bookItemStorage = JSON.stringify(bookList.children[bk].id);
+        const bookIdStorage = JSON.stringify(bookList.children[bk].querySelector('#book_id_span').firstChild.data);
+        const bookTitleStorage = JSON.stringify(bookList.children[bk].querySelector('#book_title_span').firstChild.data);
+        const bookAuthorStorage = JSON.stringify(bookList.children[bk].querySelector('#book_author_span').firstChild.data);
+        const bookDescriptionStorage = JSON.stringify(bookList.children[bk].querySelector('#book_desc').firstChild.data);
+        const bookImageStorage = JSON.stringify(bookList.children[bk].querySelector('img').getAttribute('src'));
                         
                         
-        const livreHTML =  "<div class=\"book_box\" id=\"book-item\">"
-                            //+ "<a href=\"#\" onclick=\"app.addToStorage()\"class=\"fas fa-solid fa-bookmark\" id=\"bookmark\"></a>"
+        const livreHTML =  "<div class=\"book_box\" id="+bookItemStorage+">"
+                            + "<a href=\"#\" onclick=\"app.addToStorage()\"class=\"fas fa-solid fa-bookmark\" id=\"bookmark\"></a>"
                             + "<h3 id=\"title\">Titre : <span data-title=\"title\" id=\"book_title_span\">"+bookTitleStorage+"</span></h3>"
                             + "<p>id : <span id=\"book_id_span\">"+bookIdStorage+"</span></p>"
                             + "<p>auteur : <span id=\"book_author_span\">"+bookAuthorStorage+"</span></p>"
@@ -158,15 +165,16 @@ const app = {
                             + "</div>";
                         
                         
-        console.log("bookIdStorage = " +bookIdStorage);
+        /*console.log("bookItemstorage = " + bookItemStorage);
+        console.log("bookIdStorage = " + bookIdStorage);
         console.log("bookTitleStorage = " + bookTitleStorage);
         console.log("bookAuthorStorage = " + bookAuthorStorage);
         console.log("bookDescriptionStorage = " + bookDescriptionStorage);
         console.log("bookImageStorage = " + bookImageStorage);
-        sessionStorage.setItem(bookIdStorage, livreHTML);
-        console.log("after session storage : "+ sessionStorage.getItem(bookIdStorage));
+        
+        console.log("after session storage : "+ sessionStorage.getItem(bookIdStorage));*/
                         
-                        
+        sessionStorage.setItem(bookIdStorage, livreHTML);                
                         
                         
         /*------------event listeners pour le session storage -------------------------------------*/
@@ -196,11 +204,42 @@ const app = {
            })
         })
                         
-                        
+        //TO DO ADD THE HTML WITH THE BOOKS                
         function openStorage (storage) {
         if(storage == null) return
         storage.classList.add('active')//className?
         overlay.classList.add('active')
+
+        const bookInLib = document.createElement('div');
+        bookInLib.className = 'book_box__lib';
+        let elt = document.getElementById('storage_body');
+        elt.appendChild(bookInLib);
+
+        const bookIdLib = document.createElement('p');
+        bookIdLib.className = "book-id-lib";
+        bookInLib.appendChild(bookIdLib);
+        bookIdLib.innerHTML = bookIdStorage;
+
+        const bookTitleLib = document.createElement('p');
+        bookTitleLib.className = "book-title-lib";
+        bookInLib.appendChild(bookTitleLib);
+        bookTitleLib.innerHTML = bookTitleStorage;
+
+        const bookAuthorLib = document.createElement('p');
+        bookAuthorLib.className = "book-author-lib";
+        bookInLib.appendChild(bookAuthorLib);
+        bookAuthorLib.innerHTML = bookAuthorStorage;
+
+        const bookDescriptionLib = document.createElement('p');
+        bookDescriptionLib.className = "book-description-lib";
+        bookInLib.appendChild(bookDescriptionLib);
+        bookDescriptionLib.innerHTML = bookDescriptionStorage;
+
+        const imgLib = document.createElement('img');
+        imgLib.className = "book-img-lib";
+
+        const span = document.createElement('span');
+        span.className = "icon";
             }
                         
         function closeStorage (storage){
@@ -210,7 +249,12 @@ const app = {
            }    
                         
                         
-    }//end of addtoStorage    
+    },//end of addtoStorage
+    
+    fillStorage: () => {
+        if(bookList == '')return
+        
+    }
 
 } //end of app (temp)
 
