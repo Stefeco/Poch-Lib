@@ -8,11 +8,20 @@ class Book{
     }
 }
 
+/* variable for the fetch */
 let books = [];
 let titleReq;
 let authorReq;
 let bookList = '';
 
+/* global variables for the library construction */
+let bookItemStorage = '';
+let bookIdStorage = '';
+let bookTitleStorage = '';
+let bookAuthorStorage = '';
+let bookDescriptionStorage = '';
+let bookImageStorage = '';
+let livreHTML = '';
 
 
 const app = {
@@ -52,13 +61,12 @@ const app = {
 
     getBooks: () => {
 
-        //titleReq et authorReq sont passés via la fonction checkInputs
-
+        //titleReq et authorReq sont passés comme arguments via la fonction checkInputs
         let url = "https://www.googleapis.com/books/v1/volumes?q=" + titleReq +"+inauthor:" + authorReq;
         let req = new Request(url, {
             method : 'GET',
             mode : 'cors'
-        });
+        })
         console.log("fetch : " + url);
         fetch(req)
             .then(function(response){
@@ -99,12 +107,10 @@ const app = {
                     }else{
                         sourceImg = "./images/unavailable.png";        
                     }
-    
             }
-            //console.log(livre);pour vérifier que l'objet livre est bien créé
 
             let bookHTML =         "<div class=\"book_box\" id=\"book-item"+book+"\">"
-                                + "<a href=\"#\" onclick=\"app.addToStorage("+book+")\"class=\"fas fa-solid fa-bookmark\" id=\"bookmark"+book+"\"></a>"
+                                + "<a href=\"#\" onclick=\"app.addToSessionStorage("+book+")\"class=\"fas fa-solid fa-bookmark\" id=\"bookmark"+book+"\"></a>"
                                 + "<h3 id=\"title\">Titre : <span id=\"book_title_span\">"+livre.title+"</span></h3>"
                                 + "<p>id : <span id=\"book_id_span\">"+livre.id+"</span></p>"
                                 + "<p>auteur : <span id=\"book_author_span\">"+livre.author+"</span></p>"
@@ -114,13 +120,9 @@ const app = {
 
             bookList.innerHTML += bookHTML;
 
-        }
+        }//end of "for" showbooks
 
-    console.log(bookList);
-
-
-     
-    },
+    },//end of showbooks
 
     err: (err) => {
         //remove the loading
@@ -129,138 +131,146 @@ const app = {
         //display an error
         let div = document.createElement("div");
         div.className = "error_msg";
-        div.textContent = "error message";
+        div.textContent = "connection issue or bad request!";
         document.body.appendChild(div);
         setTimeout(() => {
             let div = document.querySelector(".error_msg");
             div.parentElement.removeChild(div);
         }, 3000);
-    },
+    },//end of err
 
 
 
-    addToStorage: (bk) => {
-        console.log("addToStorage ok : " + bk);
+    addToSessionStorage: (bk) =>  {
+        console.log("addToSessionStorage ok : " + bk);
 
-        const openStorageButton = document.querySelectorAll('[data-storage-target]');
-        const closeStorageButton = document.querySelectorAll('[data-close-button]');
-        const overlay = document.getElementById('storage__overlay');
-                        
         // on charge les variables à utiliser pour le sessionStorage
-        const bookItemStorage = JSON.stringify(bookList.children[bk].id);
-        const bookIdStorage = JSON.stringify(bookList.children[bk].querySelector('#book_id_span').firstChild.data);
-        const bookTitleStorage = JSON.stringify(bookList.children[bk].querySelector('#book_title_span').firstChild.data);
-        const bookAuthorStorage = JSON.stringify(bookList.children[bk].querySelector('#book_author_span').firstChild.data);
-        const bookDescriptionStorage = JSON.stringify(bookList.children[bk].querySelector('#book_desc').firstChild.data);
-        const bookImageStorage = JSON.stringify(bookList.children[bk].querySelector('img').getAttribute('src'));
+        bookItemStorage = JSON.stringify(bookList.children[bk].id);
+        bookIdStorage = JSON.stringify(bookList.children[bk].querySelector('#book_id_span').firstChild.data);
+        bookTitleStorage = JSON.stringify(bookList.children[bk].querySelector('#book_title_span').firstChild.data);
+        bookAuthorStorage = JSON.stringify(bookList.children[bk].querySelector('#book_author_span').firstChild.data);
+        bookDescriptionStorage = JSON.stringify(bookList.children[bk].querySelector('#book_desc').firstChild.data);
+        bookImageStorage = JSON.stringify(bookList.children[bk].querySelector('img').getAttribute('src'));
                         
                         
-        const livreHTML =  "<div class=\"book_box\" id="+bookItemStorage+">"
-                            + "<a href=\"#\" onclick=\"app.addToStorage()\"class=\"fas fa-solid fa-bookmark\" id=\"bookmark\"></a>"
+        livreHTML =  "<div class=\"book_box\" id="+bookItemStorage+">"
+                            + "<a href=\"#\" onclick=\"app.removeFromSessionStorage("+bookIdStorage+")\"class=\"fas fa-solid fa-trash\" id=\"bookmark"+bookItemStorage+"\"></a>"
                             + "<h3 id=\"title\">Titre : <span data-title=\"title\" id=\"book_title_span\">"+bookTitleStorage+"</span></h3>"
                             + "<p>id : <span id=\"book_id_span\">"+bookIdStorage+"</span></p>"
                             + "<p>auteur : <span id=\"book_author_span\">"+bookAuthorStorage+"</span></p>"
                             + "<p>Description : <span class=\"book_desc_span\">"+bookDescriptionStorage+"</span></p>"
                             + "<img src="+bookImageStorage+" id = \"img-unav\" alt=\"image non disponible\"></img>"
                             + "</div>";
-                        
-                        
-        /*console.log("bookItemstorage = " + bookItemStorage);
+
+        console.log("bookItemStorage after addSessionStorage : " + bookItemStorage);
         console.log("bookIdStorage = " + bookIdStorage);
-        console.log("bookTitleStorage = " + bookTitleStorage);
-        console.log("bookAuthorStorage = " + bookAuthorStorage);
-        console.log("bookDescriptionStorage = " + bookDescriptionStorage);
-        console.log("bookImageStorage = " + bookImageStorage);
+
+        //on vérifie que l'id du livre n'existe pas déjà dans le sessionStorage
+        if(sessionStorage.length==0){
+            sessionStorage.setItem(bookIdStorage, livreHTML);
+            app.addToLibrary(sessionStorage.getItem(bookIdStorage));            
+        }else {
+           for (let i = 0; i < sessionStorage.length; i++){
+                let sessionKey = sessionStorage.key(i);
+                console.log("key = " + sessionKey);
+                if (sessionKey == bookIdStorage){
+                console.log('error : item already exist');
+                break;
+                    }
+                else if(sessionKey != sessionStorage) {//ajouté 07/04
+                    sessionStorage.setItem(bookIdStorage, livreHTML);
+                    app.addToLibrary(sessionStorage.getItem(bookIdStorage));
+                    break;
+                    }
+                }
+            }
         
-        console.log("after session storage : "+ sessionStorage.getItem(bookIdStorage));*/
-                        
-        sessionStorage.setItem(bookIdStorage, livreHTML);                
-                        
-                        
-        /*------------event listeners pour le session storage -------------------------------------*/
-        //eventListeners pour ouvrir ou fermer la librairie et changer l'overlay (semi-opaque).
-        // sélection de l'interface graphique de la librairie
 
+        
+    },//end of addtoSessionStorage
 
-        overlay.addEventListener('click',() => {
-        const storages = document.querySelectorAll('.storage.active')
-        storages.forEach(storage => {
-        closeStorage(storage);
-            })
-        })
-                        
-        openStorageButton.forEach(button => {
-        button.addEventListener('click', () => {
-        const storage = document.querySelector('#storId')
-        console.log(storage);
-        openStorage(storage)
-                    })
-                })
-                        
-        closeStorageButton.forEach(button => {
-        button.addEventListener('click', () => {
-        const storage = button.closest('.storage')
-        closeStorage(storage)
-           })
-        })
-                        
-        //TO DO ADD THE HTML WITH THE BOOKS                
-        function openStorage (storage) {
-        if(storage == null) return
-        storage.classList.add('active')//className?
-        overlay.classList.add('active')
+    addToLibrary: (storageItem) => {
 
+        console.log("storageItem = " + storageItem);
+    
         const bookInLib = document.createElement('div');
         bookInLib.className = 'book_box__lib';
-        let elt = document.getElementById('storage_body');
+        let elt = document.getElementById('library_body');
         elt.appendChild(bookInLib);
-
-        const bookIdLib = document.createElement('p');
-        bookIdLib.className = "book-id-lib";
-        bookInLib.appendChild(bookIdLib);
-        bookIdLib.innerHTML = bookIdStorage;
-
-        const bookTitleLib = document.createElement('p');
-        bookTitleLib.className = "book-title-lib";
-        bookInLib.appendChild(bookTitleLib);
-        bookTitleLib.innerHTML = bookTitleStorage;
-
-        const bookAuthorLib = document.createElement('p');
-        bookAuthorLib.className = "book-author-lib";
-        bookInLib.appendChild(bookAuthorLib);
-        bookAuthorLib.innerHTML = bookAuthorStorage;
-
-        const bookDescriptionLib = document.createElement('p');
-        bookDescriptionLib.className = "book-description-lib";
-        bookInLib.appendChild(bookDescriptionLib);
-        bookDescriptionLib.innerHTML = bookDescriptionStorage;
-
-        const imgLib = document.createElement('img');
-        imgLib.className = "book-img-lib";
-
-        const span = document.createElement('span');
-        span.className = "icon";
-            }
-                        
-        function closeStorage (storage){
-        if(storage == null) return
-        storage.classList.remove('active')
-        overlay.classList.remove('active')
-           }    
-                        
-                        
-    },//end of addtoStorage
     
-    fillStorage: () => {
-        if(bookList == '')return
+        console.log("bookInLib before adding book = " + bookInLib.innerHTML);
+        bookInLib.innerHTML += storageItem;
+        console.log("----------------------------------------------------");
+        console.log("bookInLib after adding the book = " + bookInLib.innerHTML);
+        let libElement = bookInLib.querySelector('.book_box');
+        libElement.setAttribute('id', 'book_box_Id_lib');
+        console.log(libElement);
+    
+        //to test added on 07/02 to open library automatically
+        const library = document.querySelector('#storId');
+        openLibrary(library);
+        },//end of addToLibrary
+
+    removeFromSessionStorage: (bookIdStorage) =>{
+        //close the library
+        //test remove div first.
+        //let elt = document.getElementById
         
+        //remove the book from the storage
+        sessionStorage.removeItem(bookIdStorage);
+        //loop through the library and reopen it
+
     }
 
-} //end of app (temp)
+    } // end of app
+            
+    /*------------EVENT LISTENERS DU SESSION STORAGE -------------------------------------*/
+    //eventListeners pour ouvrir ou fermer la librairie et changer l'overlay (semi-opaque).
+    // sélection de l'interface graphique de la librairie
 
+    //on écoute les boutons et l'overlay
+    const openLibraryButton = document.querySelectorAll('[data-storage-target]');
+    const closeLibraryButton = document.querySelectorAll('[data-close-button]');
+    const overlay = document.getElementById('library__overlay');
 
-/* ------- on vérifie les inputs avec des classes css différentes si erreur le champ passe en rouge et ms d'erreur si ok on passe en vert et continue ----------*/
-function checkInputs(){
+    overlay.addEventListener('click',() => {
+    const libraries = document.querySelectorAll('.library.active')
+    libraries.forEach(library => {
+    closeLibrary(library);
+        })
+    });
+         
+    openLibraryButton.forEach(button => {
+    button.addEventListener('click', () => {
+    const library = document.querySelector('#storId')
+    openLibrary(library)
+                })
+            });
+                        
+    closeLibraryButton.forEach(button => {
+    button.addEventListener('click', () => {
+    const library = button.closest('.library')
+    closeLibrary(library)
+        })
+    });
+                        
+    //TO DO ADD THE HTML WITH THE BOOKS                
+    function openLibrary (library)  {
+    if(library == null) return
+        
+    library.classList.add('active')
+    overlay.classList.add('active')
+
+        }
+                        
+    function closeLibrary (library)  {
+    if(library == null) return
+    library.classList.remove('active')
+    overlay.classList.remove('active')
+           } 
+
+    /* ------- on vérifie les inputs avec des classes css différentes si erreur le champ passe en rouge et ms d'erreur si ok on passe en vert et continue ----------*/
+    function checkInputs () {
     //get the values from the inputs
     let bookTitle = document.getElementById("bookTitle");
     let author = document.getElementById("author");
@@ -272,24 +282,23 @@ function checkInputs(){
 
     if (titleReq === undefined || titleReq === ""){
         setErrorFor(bookTitle, "you must enter a book title");
-    } else {
+        } else {
         setSuccessFor(bookTitle);
-    }
+        }
 
-    if (authorReq === undefined || authorReq === ""){
+        if (authorReq === undefined || authorReq === ""){
         setErrorFor(author, "you must enter an author name");
-    } else {
+        } else {
         setSuccessFor(author);
-    }
+        }
 
-    if ((bookTitle.parentElement.className == "input-control success") && (author.parentElement.className =="input-control success")){
+        if ((bookTitle.parentElement.className == "input-control success") && (author.parentElement.className =="input-control success")){
         app.getBooks();
+        }
     }
 
 
-}
-
-function setErrorFor(input, message){
+    function setErrorFor (input, message) {
     const inputControl = input.parentElement; // .input-control - get the input-control class name
     const small = inputControl.querySelector("small");
     //we add the error message inside the small tag
@@ -299,17 +308,12 @@ function setErrorFor(input, message){
 
 }
 
-function setSuccessFor(input){
+    function setSuccessFor (input)  {
     const inputControl = input.parentElement;
     inputControl.className = "input-control success";
 }
-
-
+/*------------ FIN DE CHECKINPUTS / SETERROR / SETSUCCESS --------------------------------------------------------*/
 
 app.init();
 
 document.querySelector("#bookSearch").addEventListener("click", checkInputs, false);
-
-
-
-
