@@ -2,29 +2,80 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="style.scss">
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,300&display=swap" rel="stylesheet">
         <script src="https://kit.fontawesome.com/95b63d5e53.js" crossorigin="anonymous"></script>
-        <title>Poch'Lib</title>
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Karla&display=swap');
-        </style> 
+        </style>
+        <title>Poch'Lib</title>
     </head>
 
 <body id="indexPage">
-    <h1>Poch'Lib</h1>
-    <hr>
-    <h2>Nouveau livre</h2>
-    <div class="addBook">
-    <form>
-        <a href="recherche.html"><input type="button" name="addBook" id="addBook" value="Ajouter une livre" /></a>
-    </form>
-    </div>
-    <hr>
-    <h2>Ma Poch'liste</h2>
-
+    <section id="indexId" class="index">
+        <!--<h1>Poch'Lib</h1>-->
+        <img src="assets/images/logo/logo.png" alt="logo">
+        <hr>
+        <h2>Nouveau livre</h2>
+        <div class="addBook">
+        <form>
+            <a href="#"><input type="button" data-close-button class="btn start-search-button" name="addBook" id="addBook" value="Ajouter une livre" /></a>
+        </form>
+        </div>
+        <hr>
+    </section>
+    <section id="error_section">
+        
+    </section>
+    <section id="rechercheId" class="recherche">
+        <h1>Poch'Lib</h1>
+        <hr>
+        <h2>Nouveau Livre</h2>
+        <form class="form" id="form">
+            <p>
+                <div class="input-control">
+                    <label for="bookTitle">Titre du livre</label>
+                    <input type="text" name="bookTitle" id="bookTitle" size="20" placeholder="titre"/>
+                    <i class="fas fa-solid fa-thumbs-up"></i>
+                    <i class="fas fa-solid fa-thumbs-down"></i>
+                    <small id="bookTitle_error">error message</small>
+                </p>
+                <p>
+                </div>
+                <div class="input-control">
+                    <label for="author">Auteur</label>
+                    <input type="text" name="author" id="author" size="20" placeholder="auteur"/>
+                    <i class="fas fa-solid fa-thumbs-up"></i>
+                    <i class="fas fa-solid fa-thumbs-down"></i>
+                    <small id="authorName_error">error message</small>
+                </p>
+                </div>
+                <p></p>
+            <p>
+                <input type="button" class="btn start-search-button" name="bookSearch" id="bookSearch" value="recherche" />
+            </p>
+            <p>
+                <a href="index.html"><input type="button" class="btn cancelSearch" name="cancelSearch" id="cancelSearch" value="annuler" /></a>
+            </p>
+            <hr>
+        </form>
+    </section>
+    <section id="myLib" class="librairieSection">
+        <h2>Ma Poch'Liste</h2>
+        <div id="output_div" class="book-container">
+            <!--here is inserted book_items through js-->
+        </div>
+        <button class="btn myLib" data-storage-target="#storId">Ma librairie!</button>
+        <div class="library" id="storId">
+            <div class="library__header">
+                <div class="library__title">Ma Poch Liste</div>
+                <button data-close-button class="btn btn-close-library">&times;</button>
+            </div>
+            <div id="library_body"></div>
+        </div>
+        <div id="library__overlay"></div>
+    </section>
     <script src="script.js" async></script>
 </body>
-
 </html>

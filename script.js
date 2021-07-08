@@ -33,6 +33,17 @@ const app = {
         //the page has finished loading
         app.showLoading();
     },
+
+    startSearch: () => {
+        const rech = document.querySelector("#rechercheId");
+        rech.classList.add('active')
+        const index = document.querySelector("#indexId");
+        index.classList.add('hidden');
+        const lib = document.querySelector("#myLib");
+        lib.classList.add('active');
+        app.fillLibrary();
+    },
+
     showLoading: () => {
         let div_loading = document.querySelector("#output_div");
         let div_intra = document.createElement("div");
@@ -40,10 +51,10 @@ const app = {
         div_intra.className = "loadingList";
         div_loading.appendChild(div_intra);
         div_intra.innerHTML = "liste chargée";
-        console.log(div_intra.innerHTML);
+        console.log("div_intra = " + div_intra.innerHTML);
     },
 
-    getData: () => {
+    /*getData: () => {
         let page = document.body.id;
         switch(page) {
             case "indexPage":
@@ -57,7 +68,7 @@ const app = {
                 //app.donothing();
             break;
         }
-    },
+    },*/
 
     getBooks: () => {
 
@@ -85,6 +96,9 @@ const app = {
 
     showBooks: (books) => {
         bookList = document.getElementById("output_div");
+        if(books === undefined){
+            app.err("aucun livre n'a été trouvé!");
+        }
 
         for (let book in books){
             let livre = new Book();
@@ -109,6 +123,10 @@ const app = {
                     }
             }
 
+            if (livre.description === null || livre.description === undefined){
+                livre.description = "information manquante";
+            }
+
             let bookHTML =         "<div class=\"book_box\" id=\"book-item"+book+"\">"
                                 + "<a href=\"#\" onclick=\"app.addToSessionStorage("+book+")\"class=\"fas fa-solid fa-bookmark\" id=\"bookmark"+book+"\"></a>"
                                 + "<h3 id=\"title\">Titre : <span id=\"book_title_span\">"+livre.title+"</span></h3>"
@@ -125,18 +143,19 @@ const app = {
     },//end of showbooks
 
     err: (err) => {
-        //remove the loading
-        let list_err = document.querySelector("#output_div");
-        list_err.innerHTML = "";
+        let list_err = document.querySelector("#error_section");
         //display an error
         let div = document.createElement("div");
         div.className = "error_msg";
-        div.textContent = "connection issue or bad request!";
-        document.body.appendChild(div);
+        div.classList.add("active");
+        div.innerHTML += err;
+        console.log(div.textContent);
+        list_err.appendChild(div);
         setTimeout(() => {
             let div = document.querySelector(".error_msg");
             div.parentElement.removeChild(div);
         }, 3000);
+        
     },//end of err
 
 
@@ -151,19 +170,21 @@ const app = {
         bookAuthorStorage = JSON.stringify(bookList.children[bk].querySelector('#book_author_span').firstChild.data);
         bookDescriptionStorage = JSON.stringify(bookList.children[bk].querySelector('#book_desc').firstChild.data);
         bookImageStorage = JSON.stringify(bookList.children[bk].querySelector('img').getAttribute('src'));
+
+        let bookIdStorageReplaced = bookIdStorage.replace(/^"(.*)"$/, '$1');
+        
+        //"+JSON.parse(bookIdStorage)+" -> to be inserted in livreHTML as parameter to removeFromSessionStorage but has a scoping error.
                         
                         
-        livreHTML =  "<div class=\"book_box\" id="+bookItemStorage+">"
-                            + "<a href=\"#\" onclick=\"app.removeFromSessionStorage("+bookIdStorage+")\"class=\"fas fa-solid fa-trash\" id=\"bookmark"+bookItemStorage+"\"></a>"
+        livreHTML =  "<div class=\"book_box_lib\" id="+bookItemStorage+">" //TODO check if id is correct later
+                            + "<a href=\"#\" onclick=\"app.removeFromSessionStorage(\'"+bookIdStorageReplaced+"\')\" class=\"fas fa-solid fa-trash\" id=\'bookmark"+bookItemStorage+"\'></a>"
                             + "<h3 id=\"title\">Titre : <span data-title=\"title\" id=\"book_title_span\">"+bookTitleStorage+"</span></h3>"
-                            + "<p>id : <span id=\"book_id_span\">"+bookIdStorage+"</span></p>"
+                            + "<p>id : <span id=\"book_id_span_lib\">"+bookIdStorage+"</span></p>"
                             + "<p>auteur : <span id=\"book_author_span\">"+bookAuthorStorage+"</span></p>"
                             + "<p>Description : <span class=\"book_desc_span\">"+bookDescriptionStorage+"</span></p>"
                             + "<img src="+bookImageStorage+" id = \"img-unav\" alt=\"image non disponible\"></img>"
                             + "</div>";
 
-        console.log("bookItemStorage after addSessionStorage : " + bookItemStorage);
-        console.log("bookIdStorage = " + bookIdStorage);
 
         //on vérifie que l'id du livre n'existe pas déjà dans le sessionStorage
         if(sessionStorage.length==0){
@@ -175,9 +196,10 @@ const app = {
                 console.log("key = " + sessionKey);
                 if (sessionKey == bookIdStorage){
                 console.log('error : item already exist');
+                app.err("le livre sélectionné est déjà dans votre librairie");
                 break;
                     }
-                else if(sessionKey != sessionStorage) {//ajouté 07/04
+                else if(sessionKey != sessionStorage && (i === (sessionStorage.length)-1)) {//ajouté 07/04
                     sessionStorage.setItem(bookIdStorage, livreHTML);
                     app.addToLibrary(sessionStorage.getItem(bookIdStorage));
                     break;
@@ -191,36 +213,85 @@ const app = {
 
     addToLibrary: (storageItem) => {
 
-        console.log("storageItem = " + storageItem);
+        //console.log("storageItem = " + storageItem);
     
         const bookInLib = document.createElement('div');
         bookInLib.className = 'book_box__lib';
         let elt = document.getElementById('library_body');
         elt.appendChild(bookInLib);
     
-        console.log("bookInLib before adding book = " + bookInLib.innerHTML);
         bookInLib.innerHTML += storageItem;
-        console.log("----------------------------------------------------");
-        console.log("bookInLib after adding the book = " + bookInLib.innerHTML);
-        let libElement = bookInLib.querySelector('.book_box');
+        let libElement = bookInLib.querySelector('.book_box_lib');
         libElement.setAttribute('id', 'book_box_Id_lib');
-        console.log(libElement);
     
         //to test added on 07/02 to open library automatically
         const library = document.querySelector('#storId');
         openLibrary(library);
         },//end of addToLibrary
 
-    removeFromSessionStorage: (bookIdStorage) =>{
-        //close the library
-        //test remove div first.
-        //let elt = document.getElementById
+    removeFromSessionStorage: (bookIdStorageReplaced) =>{
+        console.log("bookIdStorage = " + bookIdStorageReplaced);
         
-        //remove the book from the storage
-        sessionStorage.removeItem(bookIdStorage);
-        //loop through the library and reopen it
+        
+        //let bookToDel = sessionStorage.getItem(JSON.stringify(bookIdStorageReplaced));
+        //console.log("bookToDel = " + bookToDel);
 
-    }
+        const library = document.getElementById("storId");
+        console.log("library = " + JSON.stringify(library));
+        closeLibrary(library)
+
+        let libBody = document.getElementById('library_body');
+        console.log("libBody element count = " + libBody.childElementCount);
+        let children = libBody.children;
+        //const numberOfChilds = libBody.childElementCount;
+        for (let i = 0 ; i < libBody.childElementCount ; i){
+        libBody.removeChild(children[i]);
+        console.log("libBody element count after remove child = " + libBody.childElementCount);
+        if(libBody.childElementCount == 0){break;}
+        }
+
+        sessionStorage.removeItem(JSON.stringify(bookIdStorageReplaced));
+
+        for (let item in sessionStorage){
+            let storageItem = sessionStorage.getItem(item);
+            if (storageItem == null){
+                break;
+            }else {
+
+            const bookInLib = document.createElement('div');
+            bookInLib.className = 'book_box__lib';
+            let elt = document.getElementById('library_body');
+            elt.appendChild(bookInLib);
+        
+            bookInLib.innerHTML += storageItem;
+            //let libElement = bookInLib.querySelector('.book_box__lib');
+            bookInLib.setAttribute('id', 'book_box_Id_lib');
+            }
+
+        }
+            openLibrary(library);
+        },
+
+        fillLibrary: () => {
+
+            for (let item in sessionStorage){
+                let storageItem = sessionStorage.getItem(item);
+                if (storageItem == null){
+                    break;
+                }else {
+    
+                const bookInLib = document.createElement('div');
+                bookInLib.className = 'book_box__lib';
+                let elt = document.getElementById('library_body');
+                elt.appendChild(bookInLib);
+            
+                bookInLib.innerHTML += storageItem;
+                //let libElement = bookInLib.querySelector('.book_box__lib');
+                bookInLib.setAttribute('id', 'book_box_Id_lib');
+                }
+    
+            }
+        }
 
     } // end of app
             
@@ -254,7 +325,6 @@ const app = {
         })
     });
                         
-    //TO DO ADD THE HTML WITH THE BOOKS                
     function openLibrary (library)  {
     if(library == null) return
         
@@ -295,6 +365,7 @@ const app = {
         if ((bookTitle.parentElement.className == "input-control success") && (author.parentElement.className =="input-control success")){
         app.getBooks();
         }
+
     }
 
 
@@ -315,5 +386,7 @@ const app = {
 /*------------ FIN DE CHECKINPUTS / SETERROR / SETSUCCESS --------------------------------------------------------*/
 
 app.init();
+
+document.querySelector("#addBook").addEventListener("click", app.startSearch, false);
 
 document.querySelector("#bookSearch").addEventListener("click", checkInputs, false);
