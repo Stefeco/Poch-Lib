@@ -1,0 +1,306 @@
+*
+{
+    background-color:blanchedalmond;
+    font-family: 'Karla', sans-serif;
+    box-sizing: border-box;
+}
+
+.addBook
+{
+    text-align: center;
+}
+
+h1, h2
+{
+    font-family: Nunito;
+    text-align: center;
+}
+
+img
+{
+    width: 150px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.index
+{
+    display:block;
+    visibility: visible;
+}
+
+.index.hidden
+{
+    display: none;
+}
+
+.recherche
+{
+    display: block;
+    visibility: hidden;
+}
+
+.recherche.active
+{
+    visibility: visible;
+    transition: 200ms ease-in-out;
+}
+
+.librairieSection
+{
+    display: none;
+    visibility: hidden;
+}
+
+.librairieSection.active
+{
+    display: block;
+    visibility: visible;
+}
+
+.btn
+{
+    height: 3rem;
+    width: 12rem;
+    border-radius: 3px;
+    color: white;
+}
+
+.btn.start-search-button
+{
+    background-color: #1c938c;
+}
+
+.btn.myLib
+{
+    background-color: #1c938c;
+}
+
+.form
+{
+    padding: 30px 40px;
+    box-sizing: border-box;
+    align-items: center;
+}
+.input-control
+    {
+    margin-bottom: 10px;
+    padding-bottom: 20px;
+    position: relative;
+    }
+.input-control label
+    {
+    display: inline-block;
+    margin-bottom: 5px;
+    }
+.input-control input
+    {
+    height: 24px;
+    width: 95%;
+    border: 2px solid #00004d;
+    border-radius: 4px;
+    display: block;
+    font-family: inherit;
+    font-size: 18px;
+    }
+.input-control.success input
+    {
+    border-color: green;
+    }
+.input-control.error input
+    {
+    border-color: red;
+    }
+.input-control i
+    {
+    position: relative;
+    align-items:center;
+    font-size: 13px;
+    visibility: hidden;
+    }
+.input-control.success i.fa-thumbs-up
+    {
+    visibility: visible;
+    color: green;
+    }
+.input-control.error i.fa-thumbs-down
+    {
+    visibility: visible;
+    color: red;
+    }
+.input-control small
+    {
+    visibility: hidden;
+    position: relative;
+    font-size: 13px;
+    }
+.input-control.error small
+    {
+    visibility: visible;
+    color: red;
+    }
+.form input[type="button"]
+    {
+    background-color: #1c938c;
+    border: 4xp solid #f0f0f0;
+    color: #f0f0f0;
+    display: block;
+    width: 25%;
+    padding: 10px;
+    font-size: 16px;
+    font-family: inherit;
+    border-radius: 4px;
+    }
+
+#cancelSearch
+{
+    background-color: #ff6666;
+}
+
+
+#img-unav
+{
+    height: 20em;
+    width: 20em;
+}
+
+#output_div
+{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:flex-start;
+    align-items: flex-start;
+}
+
+.book_box
+{
+    max-width: 40%;
+    width: 700px;
+    border: 2px blue solid;
+    display: block;
+    padding: 3em;
+    margin: 2em;
+    .__lib{
+        margin: 2em;
+    ._lib{
+        margin : 2em;
+    }
+    }
+}
+
+#book_box_Id_lib {
+        max-width: 90%;
+        position: relative ;
+        align-content: center;
+}
+
+.book_desc_span
+{
+    display: block;
+    color: red;
+    min-width: 100%;
+    min-height: 25em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: justify;
+}
+
+.fa-bookmark
+{
+    float:right;
+}
+
+.fa-trash
+{
+    float: right;
+}
+
+.error_msg
+{
+    visibility: hidden;
+}
+
+.error_msg.active
+{
+    visibility: visible;
+    margin: 70px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    width: 30%;
+    position: relative;
+    transition: all 5s ease-in-out;
+    text-align: center;
+}
+
+.library
+{
+    position:absolute;
+    top : 50%;
+    left: 50%;
+    vertical-align: top;
+    transform: translate(-50%, -50%) scale(0);
+    transition: 200ms ease-in-out;
+    border: 1px solid black;
+    border-radius: 10px;
+    z-index: 10;
+    width: 500px;
+    max-width: 80%;
+    background-color: white;
+}
+
+.library.active
+{
+    transform: translate(-50%, -50%) scale(1);
+
+}
+
+.library__header
+{
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid black;
+}
+
+.library__title
+{
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.btn-close-library
+{
+    cursor: pointer;
+    border:none;
+    outline:none;
+    background:none;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+#library__body
+{
+    padding: 10px 15px;
+}
+
+#library__overlay
+{
+    position: fixed;
+    opacity: 0;
+    transition: 200ms ease-in-out;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    background-color: rgba(0, 0, 0, .5);
+    pointer-events: none;
+}
+
+#library__overlay.active
+{
+    opacity: 1;
+    pointer-events: all;
+}
