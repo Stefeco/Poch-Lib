@@ -8,24 +8,42 @@ class Book{
     }
 }
 
+/* variable for the fetch */
 let books = [];
 let titleReq;
 let authorReq;
-let bookHTML = '';
+let bookList = '';
 
+/* global variables for the library construction */
+let bookItemStorage = '';
+let bookIdStorage = '';
+let bookTitleStorage = '';
+let bookAuthorStorage = '';
+let bookDescriptionStorage = '';
+let bookImageStorage = '';
+let livreHTML = '';
 
 
 const app = {
     init: () => {
         document.addEventListener("DOMContentLoaded", app.load);
-        //app.getData();
         console.log("HTML Loaded");
     },
     load: () => {
         //the page has finished loading
         app.showLoading();
-        //app.getData(); TODO a modifier si on charge le bouton au load de la page ou si on utilise uniquement le bouton searchBook?
     },
+
+    startSearch: () => {
+        const rech = document.querySelector("#rechercheId");
+        rech.classList.add('active')
+        const index = document.querySelector("#indexId");
+        index.classList.add('hidden');
+        const lib = document.querySelector("#myLib");
+        lib.classList.add('active');
+        app.fillLibrary();
+    },
+
     showLoading: () => {
         let div_loading = document.querySelector("#output_div");
         let div_intra = document.createElement("div");
@@ -33,10 +51,10 @@ const app = {
         div_intra.className = "loadingList";
         div_loading.appendChild(div_intra);
         div_intra.innerHTML = "liste chargée";
-        console.log(div_intra.innerHTML);
+        console.log("div_intra = " + div_intra.innerHTML);
     },
 
-    getData: () => {
+    /*getData: () => {
         let page = document.body.id;
         switch(page) {
             case "indexPage":
@@ -50,44 +68,16 @@ const app = {
                 //app.donothing();
             break;
         }
-    },
-
-    validateEntries: () => {
-
-        let messages = []
-        console.log("titre avant le if : " + titleReq);
-        console.log("auteur avant le if : " + authorReq);
-        
-    
-        if (titleReq === undefined || titleReq === ""){
-            console.log("titre dans le if : " + titleReq);
-        messages.push("a title is required");
-        }
-        if (authorReq === undefined || authorReq === ""){
-            console.log("auteur dans le if : " + authorReq);
-        messages.push("you must enter a name for the author");
-        }
-        if(messages.length > 0){
-        console.log("messages = " + messages);
-        bookHTML = '';
-        app.err(messages);
-
-        }
-        
-    },
+    },*/
 
     getBooks: () => {
-    titleReq = document.getElementById("bookTitle").value;
-    authorReq = document.getElementById("author").value;
 
-        app.validateEntries();
-        
-
+        //titleReq et authorReq sont passés comme arguments via la fonction checkInputs
         let url = "https://www.googleapis.com/books/v1/volumes?q=" + titleReq +"+inauthor:" + authorReq;
         let req = new Request(url, {
             method : 'GET',
             mode : 'cors'
-        });
+        })
         console.log("fetch : " + url);
         fetch(req)
             .then(function(response){
@@ -105,104 +95,298 @@ const app = {
     },
 
     showBooks: (books) => {
-        let bookList = document.getElementById("output_div");
-        let bookDiv = document.createElement("DIV");
+        bookList = document.getElementById("output_div");
+        if(books === undefined){
+            app.err("aucun livre n'a été trouvé!");
+        }
 
         for (let book in books){
             let livre = new Book();
-
-            bookDiv.setAttribute("class", "book_box");
-            bookDiv.setAttribute("id", "book-item"+[book]);
 
             livre.title = books[book].volumeInfo.title;
 
             livre.id = books[book].id;
 
             livre.author = books[book].volumeInfo.authors;
-            //livre.author.innerHTML = livre.author;
             
             livre.description = books[book].volumeInfo.description;
-            //livre.description.innerHTML = livre.description;
             
             let sourceImg;
             try{
                 livre.thumbnail = books[book].volumeInfo.imageLinks.thumbnail;
-                //console.log("livre.thumbnail pour livre " + book + " : " + livre.thumbnail);
             } catch (e) {
-                //console.log("le thumbnail du livre " + book + " n'est pas présent" + e);
             } finally {
-                //let book_thumbnail_img = document.querySelector("#img-unav");
                 if(livre.thumbnail != undefined){
-                    sourceImg = livre.thumbnail;        //book_thumbnail_img.setAttribute("src", livre.thumbnail);
+                    sourceImg = livre.thumbnail;       
                     }else{
-                        sourceImg = "./images/unavailable.png";        //book_thumbnail_img.setAttribute("src", "./images/unavailable.png");
+                        sourceImg = "./images/unavailable.png";        
                     }
-    
             }
-            
-            bookHTML += "<h3 id=\"title\">Titre : <span id=\"book_title_span\">"+livre.title+"</span></h3>"
+
+            if (livre.description === null || livre.description === undefined){
+                livre.description = "information manquante";
+            }
+
+            let bookHTML =         "<div class=\"book_box\" id=\"book-item"+book+"\">"
+                                + "<a href=\"#\" onclick=\"app.addToSessionStorage("+book+")\"class=\"fas fa-solid fa-bookmark\" id=\"bookmark"+book+"\"></a>"
+                                + "<h3 id=\"title\">Titre : <span id=\"book_title_span\">"+livre.title+"</span></h3>"
                                 + "<p>id : <span id=\"book_id_span\">"+livre.id+"</span></p>"
                                 + "<p>auteur : <span id=\"book_author_span\">"+livre.author+"</span></p>"
-                                + "<p>Description : <span id=\"book_desc_span\">"+livre.description+"</span></p>"
-                                + "<img src="+sourceImg+" id = \"img-unav\" alt=\"image non disponible\"></img>";
+                                + "<p>Description : <span class=\"book_desc_span\" id=\"book_desc\">"+livre.description+"</span></p>"
+                                + "<img src="+sourceImg+" id = \"img-unav\" alt=\"image non disponible\"></img>"
+                                + "</div>";
 
-        }
+            bookList.innerHTML += bookHTML;
 
-        bookDiv.innerHTML = bookHTML;
-        bookList.appendChild(bookDiv);
-     
-    },
+        }//end of "for" showbooks
+
+    },//end of showbooks
 
     err: (err) => {
-        //remove the loading
-        let list_err = document.querySelector("#output_div");
-        list_err.innerHTML = "";
+        let list_err = document.querySelector("#error_section");
         //display an error
         let div = document.createElement("div");
         div.className = "error_msg";
-        div.textContent = "error message";
-        document.body.appendChild(div);
+        div.classList.add("active");
+        div.innerHTML += err;
+        console.log(div.textContent);
+        list_err.appendChild(div);
         setTimeout(() => {
             let div = document.querySelector(".error_msg");
             div.parentElement.removeChild(div);
         }, 3000);
+        
+    },//end of err
+
+
+
+    addToSessionStorage: (bk) =>  {
+        console.log("addToSessionStorage ok : " + bk);
+
+        // on charge les variables à utiliser pour le sessionStorage
+        bookItemStorage = JSON.stringify(bookList.children[bk].id);
+        bookIdStorage = JSON.stringify(bookList.children[bk].querySelector('#book_id_span').firstChild.data);
+        bookTitleStorage = JSON.stringify(bookList.children[bk].querySelector('#book_title_span').firstChild.data);
+        bookAuthorStorage = JSON.stringify(bookList.children[bk].querySelector('#book_author_span').firstChild.data);
+        bookDescriptionStorage = JSON.stringify(bookList.children[bk].querySelector('#book_desc').firstChild.data);
+        bookImageStorage = JSON.stringify(bookList.children[bk].querySelector('img').getAttribute('src'));
+
+        let bookIdStorageReplaced = bookIdStorage.replace(/^"(.*)"$/, '$1');
+        
+        //"+JSON.parse(bookIdStorage)+" -> to be inserted in livreHTML as parameter to removeFromSessionStorage but has a scoping error.
+                        
+                        
+        livreHTML =  "<div class=\"book_box_lib\" id="+bookItemStorage+">" //TODO check if id is correct later
+                            + "<a href=\"#\" onclick=\"app.removeFromSessionStorage(\'"+bookIdStorageReplaced+"\')\" class=\"fas fa-solid fa-trash\" id=\'bookmark"+bookItemStorage+"\'></a>"
+                            + "<h3 id=\"title\">Titre : <span data-title=\"title\" id=\"book_title_span\">"+bookTitleStorage+"</span></h3>"
+                            + "<p>id : <span id=\"book_id_span_lib\">"+bookIdStorage+"</span></p>"
+                            + "<p>auteur : <span id=\"book_author_span\">"+bookAuthorStorage+"</span></p>"
+                            + "<p>Description : <span class=\"book_desc_span\">"+bookDescriptionStorage+"</span></p>"
+                            + "<img src="+bookImageStorage+" id = \"img-unav\" alt=\"image non disponible\"></img>"
+                            + "</div>";
+
+
+        //on vérifie que l'id du livre n'existe pas déjà dans le sessionStorage
+        if(sessionStorage.length==0){
+            sessionStorage.setItem(bookIdStorage, livreHTML);
+            app.addToLibrary(sessionStorage.getItem(bookIdStorage));            
+        }else {
+           for (let i = 0; i < sessionStorage.length; i++){
+                let sessionKey = sessionStorage.key(i);
+                console.log("key = " + sessionKey);
+                if (sessionKey == bookIdStorage){
+                console.log('error : item already exist');
+                app.err("le livre sélectionné est déjà dans votre librairie");
+                break;
+                    }
+                else if(sessionKey != sessionStorage && (i === (sessionStorage.length)-1)) {//ajouté 07/04
+                    sessionStorage.setItem(bookIdStorage, livreHTML);
+                    app.addToLibrary(sessionStorage.getItem(bookIdStorage));
+                    break;
+                    }
+                }
+            }
+        
+
+        
+    },//end of addtoSessionStorage
+
+    addToLibrary: (storageItem) => {
+
+        //console.log("storageItem = " + storageItem);
+    
+        const bookInLib = document.createElement('div');
+        bookInLib.className = 'book_box__lib';
+        let elt = document.getElementById('library_body');
+        elt.appendChild(bookInLib);
+    
+        bookInLib.innerHTML += storageItem;
+        let libElement = bookInLib.querySelector('.book_box_lib');
+        libElement.setAttribute('id', 'book_box_Id_lib');
+    
+        //to test added on 07/02 to open library automatically
+        const library = document.querySelector('#storId');
+        openLibrary(library);
+        },//end of addToLibrary
+
+    removeFromSessionStorage: (bookIdStorageReplaced) =>{
+        console.log("bookIdStorage = " + bookIdStorageReplaced);
+        
+        
+        //let bookToDel = sessionStorage.getItem(JSON.stringify(bookIdStorageReplaced));
+        //console.log("bookToDel = " + bookToDel);
+
+        const library = document.getElementById("storId");
+        console.log("library = " + JSON.stringify(library));
+        closeLibrary(library)
+
+        let libBody = document.getElementById('library_body');
+        console.log("libBody element count = " + libBody.childElementCount);
+        let children = libBody.children;
+        //const numberOfChilds = libBody.childElementCount;
+        for (let i = 0 ; i < libBody.childElementCount ; i){
+        libBody.removeChild(children[i]);
+        console.log("libBody element count after remove child = " + libBody.childElementCount);
+        if(libBody.childElementCount == 0){break;}
+        }
+
+        sessionStorage.removeItem(JSON.stringify(bookIdStorageReplaced));
+
+        for (let item in sessionStorage){
+            let storageItem = sessionStorage.getItem(item);
+            if (storageItem == null){
+                break;
+            }else {
+
+            const bookInLib = document.createElement('div');
+            bookInLib.className = 'book_box__lib';
+            let elt = document.getElementById('library_body');
+            elt.appendChild(bookInLib);
+        
+            bookInLib.innerHTML += storageItem;
+            //let libElement = bookInLib.querySelector('.book_box__lib');
+            bookInLib.setAttribute('id', 'book_box_Id_lib');
+            }
+
+        }
+            openLibrary(library);
+        },
+
+        fillLibrary: () => {
+
+            for (let item in sessionStorage){
+                let storageItem = sessionStorage.getItem(item);
+                if (storageItem == null){
+                    break;
+                }else {
+    
+                const bookInLib = document.createElement('div');
+                bookInLib.className = 'book_box__lib';
+                let elt = document.getElementById('library_body');
+                elt.appendChild(bookInLib);
+            
+                bookInLib.innerHTML += storageItem;
+                //let libElement = bookInLib.querySelector('.book_box__lib');
+                bookInLib.setAttribute('id', 'book_box_Id_lib');
+                }
+    
+            }
+        }
+
+    } // end of app
+            
+    /*------------EVENT LISTENERS DU SESSION STORAGE -------------------------------------*/
+    //eventListeners pour ouvrir ou fermer la librairie et changer l'overlay (semi-opaque).
+    // sélection de l'interface graphique de la librairie
+
+    //on écoute les boutons et l'overlay
+    const openLibraryButton = document.querySelectorAll('[data-storage-target]');
+    const closeLibraryButton = document.querySelectorAll('[data-close-button]');
+    const overlay = document.getElementById('library__overlay');
+
+    overlay.addEventListener('click',() => {
+    const libraries = document.querySelectorAll('.library.active')
+    libraries.forEach(library => {
+    closeLibrary(library);
+        })
+    });
+         
+    openLibraryButton.forEach(button => {
+    button.addEventListener('click', () => {
+    const library = document.querySelector('#storId')
+    openLibrary(library)
+                })
+            });
+                        
+    closeLibraryButton.forEach(button => {
+    button.addEventListener('click', () => {
+    const library = button.closest('.library')
+    closeLibrary(library)
+        })
+    });
+                        
+    function openLibrary (library)  {
+    if(library == null) return
+        
+    library.classList.add('active')
+    overlay.classList.add('active')
+
+        }
+                        
+    function closeLibrary (library)  {
+    if(library == null) return
+    library.classList.remove('active')
+    overlay.classList.remove('active')
+           } 
+
+    /* ------- on vérifie les inputs avec des classes css différentes si erreur le champ passe en rouge et ms d'erreur si ok on passe en vert et continue ----------*/
+    function checkInputs () {
+    //get the values from the inputs
+    let bookTitle = document.getElementById("bookTitle");
+    let author = document.getElementById("author");
+    titleReq = bookTitle.value.trim();
+    authorReq = author.value.trim();
+
+    let errorMsg = document.querySelector("#bookTitle_error").innerHTML;
+    console.log(errorMsg);
+
+    if (titleReq === undefined || titleReq === ""){
+        setErrorFor(bookTitle, "you must enter a book title");
+        } else {
+        setSuccessFor(bookTitle);
+        }
+
+        if (authorReq === undefined || authorReq === ""){
+        setErrorFor(author, "you must enter an author name");
+        } else {
+        setSuccessFor(author);
+        }
+
+        if ((bookTitle.parentElement.className == "input-control success") && (author.parentElement.className =="input-control success")){
+        app.getBooks();
+        }
+
     }
 
+
+    function setErrorFor (input, message) {
+    const inputControl = input.parentElement; // .input-control - get the input-control class name
+    const small = inputControl.querySelector("small");
+    //we add the error message inside the small tag
+    small.innerHTML=message;
+    //add error class
+    inputControl.className="input-control error";
+
 }
+
+    function setSuccessFor (input)  {
+    const inputControl = input.parentElement;
+    inputControl.className = "input-control success";
+}
+/*------------ FIN DE CHECKINPUTS / SETERROR / SETSUCCESS --------------------------------------------------------*/
 
 app.init();
 
-document.querySelector("#bookSearch").addEventListener("click", app.getBooks, true);
+document.querySelector("#addBook").addEventListener("click", app.startSearch, false);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/** 
-function addMessage(){
-    document.getElementById("searchPage");
-    document.querySelector("#aqueSearch").innerHTML = "I search for a book!";
-}
-
-function addTestMessage(){
-    document.getElementById("indexPage");
-    document.getElementById("test").innerHTML = "added test message";
-}
-
-
-
-//addMessage();
-*/
+document.querySelector("#bookSearch").addEventListener("click", checkInputs, false);
