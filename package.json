@@ -1,0 +1,22 @@
+{
+  "name": "pochlib",
+  "version": "1.0.0",
+  "description": "package JSON sass",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stefeco/Poch-Lib.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Stefeco/Poch-Lib/issues"
+  },
+  "homepage": "https://github.com/Stefeco/Poch-Lib#readme",
+  "dependencies": {
+    "sass": "^1.35.2"
+  }
+}
