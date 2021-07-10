@@ -54,22 +54,6 @@ const app = {
         console.log("div_intra = " + div_intra.innerHTML);
     },
 
-    /*getData: () => {
-        let page = document.body.id;
-        switch(page) {
-            case "indexPage":
-            break;
-
-            case "searchPage":
-            app.getBooks();
-            break;
-
-            default:
-                //app.donothing();
-            break;
-        }
-    },*/
-
     getBooks: () => {
 
         //titleReq et authorReq sont passés comme arguments via la fonction checkInputs
@@ -132,7 +116,7 @@ const app = {
                                 + "<h3 id=\"title\">Titre : <span id=\"book_title_span\">"+livre.title+"</span></h3>"
                                 + "<p>id : <span id=\"book_id_span\">"+livre.id+"</span></p>"
                                 + "<p>auteur : <span id=\"book_author_span\">"+livre.author+"</span></p>"
-                                + "<p>Description : <span class=\"book_desc_span\" id=\"book_desc\">"+livre.description+"</span></p>"
+                                + "<p>Description : <br><br><span class=\"book_desc_span\" id=\"book_desc\">"+livre.description.substring(0, 199)+"</span></p>"
                                 + "<img src="+sourceImg+" id = \"img-unav\" alt=\"image non disponible\"></img>"
                                 + "</div>";
 
@@ -181,7 +165,7 @@ const app = {
                             + "<h3 id=\"title\">Titre : <span data-title=\"title\" id=\"book_title_span\">"+bookTitleStorage+"</span></h3>"
                             + "<p>id : <span id=\"book_id_span_lib\">"+bookIdStorage+"</span></p>"
                             + "<p>auteur : <span id=\"book_author_span\">"+bookAuthorStorage+"</span></p>"
-                            + "<p>Description : <span class=\"book_desc_span\">"+bookDescriptionStorage+"</span></p>"
+                            + "<p>Description : <br><br><span class=\"book_desc_span\">"+bookDescriptionStorage+"</span></p>"
                             + "<img src="+bookImageStorage+" id = \"img-unav\" alt=\"image non disponible\"></img>"
                             + "</div>";
 

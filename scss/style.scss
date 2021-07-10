@@ -1,8 +1,11 @@
+$green-btn : #1c938c;
+$orange-btn:#ff6666;
+
 *
 {
-    background-color:blanchedalmond;
+    background-color:white;
     font-family: 'Karla', sans-serif;
-    box-sizing: border-box;
+    //box-sizing: border-box;
 }
 
 .addBook
@@ -18,8 +21,8 @@ h1, h2
 
 img
 {
-    width: 150px;
-    display: block;
+    width: 150px;;
+    display: table;
     margin-left: auto;
     margin-right: auto;
 }
@@ -57,6 +60,7 @@ img
 {
     display: block;
     visibility: visible;
+    position:relative;
 }
 
 .btn
@@ -75,6 +79,9 @@ img
 .btn.myLib
 {
     background-color: #1c938c;
+    position:inherit;
+    left: 50%;
+    right: 50%;
 }
 
 .form
@@ -142,7 +149,7 @@ img
     }
 .form input[type="button"]
     {
-    background-color: #1c938c;
+    background-color: $green-btn;
     border: 4xp solid #f0f0f0;
     color: #f0f0f0;
     display: block;
@@ -155,14 +162,15 @@ img
 
 #cancelSearch
 {
-    background-color: #ff6666;
+    background-color: $orange-btn;
 }
 
 
 #img-unav
 {
-    height: 20em;
-    width: 20em;
+    height: auto;
+    width: auto;
+    align-items: center;
 }
 
 #output_div
@@ -176,31 +184,27 @@ img
 .book_box
 {
     max-width: 40%;
-    width: 700px;
+    width: 18rem;
     border: 2px blue solid;
     display: block;
     padding: 3em;
     margin: 2em;
-    .__lib{
-        margin: 2em;
-    ._lib{
-        margin : 2em;
-    }
-    }
+    height: 630px;
 }
+
 
 #book_box_Id_lib {
         max-width: 90%;
         position: relative ;
-        align-content: center;
+        //align-content: center;
 }
 
 .book_desc_span
 {
     display: block;
-    color: red;
+    color: black;
     min-width: 100%;
-    min-height: 25em;
+    min-height: 10rem;
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: justify;
@@ -226,7 +230,7 @@ img
     visibility: visible;
     margin: 70px auto;
     padding: 20px;
-    background: #fff;
+    background: rgb(194, 194, 194);
     border-radius: 5px;
     width: 30%;
     position: relative;
@@ -239,21 +243,29 @@ img
     position:absolute;
     top : 50%;
     left: 50%;
-    vertical-align: top;
+    display: block;
     transform: translate(-50%, -50%) scale(0);
     transition: 200ms ease-in-out;
     border: 1px solid black;
     border-radius: 10px;
     z-index: 10;
-    width: 500px;
+    width: 30rem;
     max-width: 80%;
     background-color: white;
 }
 
 .library.active
 {
-    transform: translate(-50%, -50%) scale(1);
+transform: translate(-50%, -50%) scale(1);
+}
 
+.library__title
+{
+width: 100%;
+font-size: 1.25rem;
+font-weight: bold;
+font-family: Nunito;
+text-align: center;
 }
 
 .library__header
@@ -265,14 +277,22 @@ img
     border-bottom: 1px solid black;
 }
 
-.library__title
-{
-    font-size: 1.25rem;
-    font-weight: bold;
+.book_box_lib{
+    margin: 1rem;
+    border: black solid 1px;
+    min-height: 564px;
 }
+
+.book_box__lib{
+    margin: 1rem;
+    display: inline;
+}
+
 
 .btn-close-library
 {
+    align-self: flex-end;
+    color: black;
     cursor: pointer;
     border:none;
     outline:none;
@@ -281,9 +301,10 @@ img
     font-weight: bold;
 }
 
-#library__body
+#library_body
 {
-    padding: 10px 15px;
+    padding: 1rem 2rem;
+    display: block;
 }
 
 #library__overlay
