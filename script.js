@@ -44,6 +44,17 @@ const app = {
         app.fillLibrary();
     },
 
+    cancelSearch : () => {
+        const rech = document.querySelector(".recherche");
+        rech.classList.remove('active');
+        const index = document.querySelector("#indexId");
+        index.classList.remove('hidden');
+        const lib = document.querySelector("#myLib");
+        lib.classList.remove('active');
+        const input = document.querySelector(".form");
+        input.setAttribute("visibility", "hidden");
+    },
+
     showLoading: () => {
         let div_loading = document.querySelector("#output_div");
         let div_intra = document.createElement("div");
@@ -374,3 +385,5 @@ app.init();
 document.querySelector("#addBook").addEventListener("click", app.startSearch, false);
 
 document.querySelector("#bookSearch").addEventListener("click", checkInputs, false);
+
+document.querySelector("#cancelSearch").addEventListener("click", app.cancelSearch, false);

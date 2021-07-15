@@ -93,11 +93,11 @@ img {
   padding-bottom: 20px;
   position: relative;
 }
-.input-control label {
+.input-controllabel {
   display: inline-block;
   margin-bottom: 5px;
 }
-.input-control input {
+.input-controlinput {
   height: 24px;
   width: 95%;
   border: 2px solid #00004d;
@@ -112,28 +112,23 @@ img {
 .input-control.error input {
   border-color: red;
 }
-.input-control i {
-  position: relative;
-  align-items: center;
-  font-size: 13px;
-  visibility: hidden;
-}
 .input-control.success i.fa-thumbs-up {
-  visibility: visible;
   color: green;
 }
 .input-control.error i.fa-thumbs-down {
-  visibility: visible;
   color: red;
 }
 .input-control small {
-  visibility: hidden;
   position: relative;
   font-size: 13px;
 }
 .input-control.error small {
-  visibility: visible;
   color: red;
+}
+.input-control i {
+  position: relative;
+  align-items: center;
+  font-size: 13px;
 }
 
 #img-unav {

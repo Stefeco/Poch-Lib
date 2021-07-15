@@ -115,12 +115,12 @@ img
     margin-bottom: 10px;
     padding-bottom: 20px;
     position: relative;
-    & label
+    &label
     {
         display: inline-block;
         margin-bottom: 5px;
     }
-    & input
+    &input
     {
         height: 24px;
         width: 95%;
@@ -138,33 +138,28 @@ img
     {
         border-color: red;
     }
-    & i
-    {
-        position: relative;
-        align-items:center;
-        font-size: 13px;
-        visibility: hidden;
-    }
     &.success i.fa-thumbs-up
     {
-        visibility: visible;
         color: green;
     }
     &.error i.fa-thumbs-down
     {
-        visibility: visible;
         color: red;
     }
     & small
     {
-        visibility: hidden;
         position: relative;
         font-size: 13px;
     }
     &.error small
     {
-        visibility: visible;
         color: red;
+    }
+    & i
+    {
+        position: relative;
+        align-items:center;
+        font-size: 13px;
     }
 }
 
