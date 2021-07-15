@@ -35,6 +35,10 @@ const app = {
     },
 
     startSearch: () => {
+        let bookdel = document.getElementById("bookTitle");
+        bookdel.value = "";
+        let authordel = document.getElementById("author");
+        authordel.value = "";
         const rech = document.querySelector("#rechercheId");
         rech.classList.add('active')
         const index = document.querySelector("#indexId");
@@ -51,8 +55,8 @@ const app = {
         index.classList.remove('hidden');
         const lib = document.querySelector("#myLib");
         lib.classList.remove('active');
-        const input = document.querySelector(".form");
-        input.setAttribute("visibility", "hidden");
+        app.emptyStore();
+        app.emptyLibrary();
     },
 
     showLoading: () => {
@@ -286,6 +290,32 @@ const app = {
                 }
     
             }
+        },
+
+        emptyStore: () => {
+            let storeBody = document.getElementById('output_div');
+            console.log("storeBody element count = " + storeBody.childElementCount);
+            let children = storeBody.children;
+            //const numberOfChilds = libBody.childElementCount;
+            for (let i = 0 ; i < storeBody.childElementCount ; i){
+            storeBody.removeChild(children[i]);
+            console.log("storeBody element count after remove child = " + storeBody.childElementCount);
+            if(storeBody.childElementCount == 0){break;}
+            }
+    
+        },
+
+        emptyLibrary: () => {
+            let libraryBody = document.getElementById('library_body');
+            console.log("libraryBody element count = " + libraryBody.childElementCount);
+            let children = libraryBody.children;
+            //const numberOfChilds = libBody.childElementCount;
+            for (let i = 0 ; i < libraryBody.childElementCount ; i){
+            libraryBody.removeChild(children[i]);
+            console.log("libraryBody element count after remove child = " + libraryBody.childElementCount);
+            if(libraryBody.childElementCount == 0){break;}
+            }
+
         }
 
     } // end of app
@@ -341,9 +371,6 @@ const app = {
     let author = document.getElementById("author");
     titleReq = bookTitle.value.trim();
     authorReq = author.value.trim();
-
-    let errorMsg = document.querySelector("#bookTitle_error").innerHTML;
-    console.log(errorMsg);
 
     if (titleReq === undefined || titleReq === ""){
         setErrorFor(bookTitle, "you must enter a book title");

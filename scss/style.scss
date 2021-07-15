@@ -96,31 +96,32 @@ img
     {
         background-color: $orange-btn;
     }
+    &-close-library
+    {
+        align-self: flex-end;
+        color: black;
+        cursor: pointer;
+        border:none;
+        outline:none;
+        background:none;
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
 }
 
-.btn-close-library
-{
-    align-self: flex-end;
-    color: black;
-    cursor: pointer;
-    border:none;
-    outline:none;
-    background:none;
-    font-size: 1.25rem;
-    font-weight: bold;
-}
+
 
 .input-control
 {
     margin-bottom: 10px;
     padding-bottom: 20px;
     position: relative;
-    &label
+    & label
     {
         display: inline-block;
         margin-bottom: 5px;
     }
-    &input
+    & input
     {
         height: 24px;
         width: 95%;
@@ -130,36 +131,41 @@ img
         font-family: inherit;
         font-size: 18px;
     }
-    &.success input
+    & .success input
     {
         border-color: green;
     }
-    &.error input
+    & .error input
     {
         border-color: red;
     }
-    &.success i.fa-thumbs-up
+    & .success i.fa-thumbs-up
     {
         color: green;
+        visibility: inherit;
     }
-    &.error i.fa-thumbs-down
+    & .error i.fa-thumbs-down
     {
         color: red;
+        visibility: inherit;
     }
     & small
     {
         position: relative;
         font-size: 13px;
+        visibility: hidden;
     }
-    &.error small
+    & .error small
     {
         color: red;
+        visibility: inherit;
     }
     & i
     {
         position: relative;
         align-items:center;
         font-size: 13px;
+        visibility: hidden;
     }
 }
 
@@ -193,6 +199,7 @@ img
 #book_box_Id_lib {
         max-width: 90%;
         position: relative ;
+        min-width: 22rem;
 }
 
 .book_desc_span

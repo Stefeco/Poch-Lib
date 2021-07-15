@@ -76,7 +76,6 @@ img {
 .btn.cancelSearch {
   background-color: #ff6666;
 }
-
 .btn-close-library {
   align-self: flex-end;
   color: black;
@@ -93,11 +92,11 @@ img {
   padding-bottom: 20px;
   position: relative;
 }
-.input-controllabel {
+.input-control label {
   display: inline-block;
   margin-bottom: 5px;
 }
-.input-controlinput {
+.input-control input {
   height: 24px;
   width: 95%;
   border: 2px solid #00004d;
@@ -106,29 +105,34 @@ img {
   font-family: inherit;
   font-size: 18px;
 }
-.input-control.success input {
+.input-control .success input {
   border-color: green;
 }
-.input-control.error input {
+.input-control .error input {
   border-color: red;
 }
-.input-control.success i.fa-thumbs-up {
+.input-control .success i.fa-thumbs-up {
   color: green;
+  visibility: inherit;
 }
-.input-control.error i.fa-thumbs-down {
+.input-control .error i.fa-thumbs-down {
   color: red;
+  visibility: inherit;
 }
 .input-control small {
   position: relative;
   font-size: 13px;
+  visibility: hidden;
 }
-.input-control.error small {
+.input-control .error small {
   color: red;
+  visibility: inherit;
 }
 .input-control i {
   position: relative;
   align-items: center;
   font-size: 13px;
+  visibility: hidden;
 }
 
 #img-unav {
@@ -157,6 +161,7 @@ img {
 #book_box_Id_lib {
   max-width: 90%;
   position: relative;
+  min-width: 22rem;
 }
 
 .book_desc_span {
