@@ -60,20 +60,14 @@
             <hr>
         </form>
     </div>
-    <div id="myLib" class="librairieSection">
-        <button class="btn myLib" data-storage-target="#storId">Ma librairie!</button>
+    <div id="myLib" class="librairieSection active">
+        <h2>Ma poche'liste</h2>
         <div id="output_div" class="book-container">
-            <!--here is inserted book_items through js-->
+            <!--here is inserted book_items in the library / storage-->
         </div>
-
-        <div class="library" id="storId">
-            <div class="library__header">
-                <div class="library__title">Ma Poch Liste</div>
-                <button data-close-button class="btn btn-close-library">&times;</button>
-            </div>
-            <div id="library_body"></div>
+        <div id="research_result" class="book-container">
+            <!--here is inserted book items researched on api-->
         </div>
-        <div id="library__overlay"></div>
     </div>
     <script src="script.js" async></script>
 </body>

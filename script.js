@@ -28,6 +28,7 @@ const app = {
     init: () => {
         document.addEventListener("DOMContentLoaded", app.load);
         console.log("HTML Loaded");
+        app.fillLibrary();
     },
     load: () => {
         //the page has finished loading
@@ -45,7 +46,7 @@ const app = {
         index.classList.add('hidden');
         const lib = document.querySelector("#myLib");
         lib.classList.add('active');
-        app.fillLibrary();
+        //app.fillLibrary();
     },
 
     cancelSearch : () => {
@@ -55,8 +56,7 @@ const app = {
         index.classList.remove('hidden');
         const lib = document.querySelector("#myLib");
         lib.classList.remove('active');
-        app.emptyStore();
-        app.emptyLibrary();
+        app.emptyResearch();
     },
 
     showLoading: () => {
@@ -94,7 +94,7 @@ const app = {
     },
 
     showBooks: (books) => {
-        bookList = document.getElementById("output_div");
+        bookList = document.getElementById("research_result");
         if(books === undefined){
             app.err("aucun livre n'a été trouvé!");
         }
@@ -216,16 +216,15 @@ const app = {
     
         const bookInLib = document.createElement('div');
         bookInLib.className = 'book_box__lib';
-        let elt = document.getElementById('library_body');
+        let elt = document.getElementById('output_div');
         elt.appendChild(bookInLib);
     
         bookInLib.innerHTML += storageItem;
         let libElement = bookInLib.querySelector('.book_box_lib');
         libElement.setAttribute('id', 'book_box_Id_lib');
     
-        //to test added on 07/02 to open library automatically
-        const library = document.querySelector('#storId');
-        openLibrary(library);
+        /*const library = document.querySelector('#storId');
+        openLibrary(library);*/
         },//end of addToLibrary
 
     removeFromSessionStorage: (bookIdStorageReplaced) =>{
@@ -235,11 +234,11 @@ const app = {
         //let bookToDel = sessionStorage.getItem(JSON.stringify(bookIdStorageReplaced));
         //console.log("bookToDel = " + bookToDel);
 
-        const library = document.getElementById("storId");
+        /*const library = document.getElementById("output_div");
         console.log("library = " + JSON.stringify(library));
-        closeLibrary(library)
+        //closeLibrary(library)*/
 
-        let libBody = document.getElementById('library_body');
+        let libBody = document.getElementById('output_div');
         console.log("libBody element count = " + libBody.childElementCount);
         let children = libBody.children;
         //const numberOfChilds = libBody.childElementCount;
@@ -259,7 +258,7 @@ const app = {
 
             const bookInLib = document.createElement('div');
             bookInLib.className = 'book_box__lib';
-            let elt = document.getElementById('library_body');
+            let elt = document.getElementById('output_div');
             elt.appendChild(bookInLib);
         
             bookInLib.innerHTML += storageItem;
@@ -268,7 +267,7 @@ const app = {
             }
 
         }
-            openLibrary(library);
+            //openLibrary(library);
         },
 
         fillLibrary: () => {
@@ -281,7 +280,7 @@ const app = {
     
                 const bookInLib = document.createElement('div');
                 bookInLib.className = 'book_box__lib';
-                let elt = document.getElementById('library_body');
+                let elt = document.getElementById('output_div');
                 elt.appendChild(bookInLib);
             
                 bookInLib.innerHTML += storageItem;
@@ -306,7 +305,7 @@ const app = {
         },
 
         emptyLibrary: () => {
-            let libraryBody = document.getElementById('library_body');
+            let libraryBody = document.getElementById('output_div');
             console.log("libraryBody element count = " + libraryBody.childElementCount);
             let children = libraryBody.children;
             //const numberOfChilds = libBody.childElementCount;
@@ -316,27 +315,24 @@ const app = {
             if(libraryBody.childElementCount == 0){break;}
             }
 
+        },
+
+        emptyResearch: () => {
+            let researchToDel = document.getElementById('research_result');
+            let children = researchToDel.children;
+            for (let i = 0; i < researchToDel.childElementCount; i){
+                researchToDel.removeChild(children[i]);
+                if(researchToDel.childElementCount == 0){break;}
+            }
         }
 
     } // end of app
             
     /*------------EVENT LISTENERS DU SESSION STORAGE -------------------------------------*/
-    //eventListeners pour ouvrir ou fermer la librairie et changer l'overlay (semi-opaque).
+    //eventListeners pour ouvrir ou fermer la librairie
     // sélection de l'interface graphique de la librairie
 
-    //on écoute les boutons et l'overlay
-    const openLibraryButton = document.querySelectorAll('[data-storage-target]');
-    const closeLibraryButton = document.querySelectorAll('[data-close-button]');
-    const overlay = document.getElementById('library__overlay');
-
-    overlay.addEventListener('click',() => {
-    const libraries = document.querySelectorAll('.library.active')
-    libraries.forEach(library => {
-    closeLibrary(library);
-        })
-    });
-         
-    openLibraryButton.forEach(button => {
+    /*openLibraryButton.forEach(button => {
     button.addEventListener('click', () => {
     const library = document.querySelector('#storId')
     openLibrary(library)
@@ -354,15 +350,13 @@ const app = {
     if(library == null) return
         
     library.classList.add('active')
-    overlay.classList.add('active')
 
         }
                         
     function closeLibrary (library)  {
     if(library == null) return
     library.classList.remove('active')
-    overlay.classList.remove('active')
-           } 
+        } */
 
     /* ------- on vérifie les inputs avec des classes css différentes si erreur le champ passe en rouge et ms d'erreur si ok on passe en vert et continue ----------*/
     function checkInputs () {

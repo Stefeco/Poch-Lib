@@ -39,10 +39,11 @@ img
 
 .recherche
 {
-    display: block;
+    display:none;
     visibility: hidden;
     &.active
     {
+        display:block;
         visibility: visible;
         transition: 200ms ease-in-out;
     }
@@ -50,13 +51,12 @@ img
 
 .librairieSection
 {
-    display: none;
-    visibility: hidden;
+    display: block;
+    visibility: visible;
     &.active
     {
         display: block;
         visibility: visible;
-        position:relative;
     }
 }
 
@@ -184,6 +184,14 @@ img
     align-items: flex-start;
 }
 
+#research_result
+{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
 .book_box
 {
     max-width: 40%;
@@ -197,9 +205,14 @@ img
 
 
 #book_box_Id_lib {
-        max-width: 90%;
         position: relative ;
-        min-width: 22rem;
+        width: 18rem;
+        border:2px green solid;
+        display:block;
+        flex-wrap: wrap;
+        padding:3em;
+        margin:2em;
+        height:630px;
 }
 
 .book_desc_span
@@ -284,8 +297,7 @@ img
 }
 
 .book_box__lib{
-    margin: 1rem;
-    display: inline;
+    display: block;
 }
 
 #library_body
@@ -319,32 +331,65 @@ img
 
 
 // SMALL SCREEN - MOBILE PHONE
-@media (max-width: 767px) {
-    #output_div {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: flex-start;
+@media handheld and (max-width: 812px) {
+    body {
+        width:auto;
     }
+
+    .error_msg
+    {
+    visibility: hidden;
+    &.active
+        {
+        visibility: visible;
+        margin: 40px auto;
+        padding: 10px;
+        background: rgb(194, 194, 194);
+        border-radius: 3px;
+        width: 30%;
+        position: relative;
+        transition: all 5s ease-in-out;
+        text-align: center;
+        }
+    }
+
+    #book_box_Id_lib {
+        position: relative ;
+        width: 14rem;
+        border:2px green solid;
+        display:block;
+        flex-wrap: wrap;
+        padding:2em;
+        margin:2em;
+        height:auto;
+    }
+
+    .book_box_lib{
+        border: #8080804f solid 1px;
+        min-height: auto;
+    }
+
   }
 
   // MEDIUM SCREEN - TABLETS
-@media (min-width: 768px) and (max-width: 991px) {
-    #output_div{
-        display: flex;
-        flex-wrap: wrap;
-        align-items: flex-start;
-    }
-  }
+@media screen and (min-width: 813px) and (max-width: 1024px) {
 
-  // LARGE SCREEN - DESKTOP
-  @media (min-width: 992px) {
-    #output_div{
-        display: flex;
-        flex-wrap: wrap;  
-        align-items: flex-start;
+    #book_box_Id_lib {
+        position: relative ;
+        width: 14rem;
+        border:2px green solid;
+        display:block;
+        flex-wrap: wrap;
+        padding:2em;
+        margin:2em;
+        height:auto;
     }
-  }  
- 
+
+    .book_box_lib{
+        border: #8080804f solid 1px;
+        min-height: auto;
+    }
+} 
 
 
 
